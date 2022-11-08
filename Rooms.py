@@ -27,7 +27,7 @@ class Shop:
             if self.armor:
                 print(self.armor.name + ": " + str(self.armor.gold) + " gold")
             print("You have " + str(character.gold) + " gold.")
-            selection = input("What would you like to buy? Or would you prefer to sell? ")
+            selection = input("What would you like to buy? Or would you prefer to sell? (Type item name.)")
             if selection.lower() == "knives" or selection.lower() == "knife":
                 number = input("How many knives do you want to buy? max: " + str(self.knives) + " ")
                 if number.isdigit():
@@ -85,13 +85,17 @@ class Shop:
             elif selection.lower() == "sell":
                 print("What would you like to sell?")
                 print("Equipped weapon: " + character.equippedWeapon.print_details())
+                print()
                 for stored_weapon in character.storedWeapons:
                     print("Stored weapons: " + stored_weapon.print_details())
+                    print()
                 if character.equippedArmor.name != "None":
                     print("Equipped armor: " + character.equippedArmor.print_details())
+                    print()
                 for stored_armor in character.storedArmor:
                     if stored_armor.name != "None":
                         print("Stored armor: " + stored_armor.print_details())
+                        print()
                 selling = input()
                 if selling.lower() == character.equippedWeapon.name.lower():
                     print(character.equippedWeapon.name + " sold for " + str(character.equippedWeapon.gold))
@@ -121,6 +125,42 @@ class Shop:
                                 break
                         if not equipped:
                             character.equippedArmor = Armor("None", 0, 0)
+                elif selling.lower() == "knives" or selling.lower() == "throwing knives":
+                    if character.knives == 0:
+                        print("You don't have any throwing knives to sell.")
+                    else:
+                        knives = input("You have " + str(character.knives) + " throwing knives to sell. How many do you"
+                                                                             " want to sell for 1 gold each?")
+                        if knives.isdigit():
+                            if 0 < int(knives) <= character.knives:
+                                print(knives + " throwing knives sold.")
+                                self.knives += int(knives)
+                                character.knives -= int(knives)
+                                character.gold += int(knives)
+                            elif int(knives) > character.knives:
+                                print("You don't have that many knives.")
+                            else:
+                                print("Invalid number of knives.")
+                        else:
+                            print("Invalid input.")
+                elif selling.lower() == "arrows":
+                    if character.arrows == 0:
+                        print("You don't have any arrows to sell.")
+                    else:
+                        arrows = input("You have " + str(character.arrows) + " arrows to sell. How many do you want to "
+                                                                             "sell for 2 gold each?")
+                        if arrows.isdigit():
+                            if 0 < int(arrows) <= character.arrows:
+                                print(arrows + " arrows sold.")
+                                self.arrows += int(arrows)
+                                character.arrows -= int(arrows)
+                                character.gold += 2 * int(arrows)
+                            elif int(arrows) > character.arrows:
+                                print("You don't have that many arrows.")
+                            else:
+                                print("Invalid number of arrows.")
+                        else:
+                            print("Invalid input.")
                 else:
                     sold = False
                     for item in character.storedWeapons:
@@ -138,7 +178,7 @@ class Shop:
                     if not sold:
                         print("You don't have that item to sell")
             else:
-                if selection.lower() != "leave" or selection.lower() != "nothing":
+                if selection.lower() != "leave" and selection.lower() != "nothing":
                     print("Invalid input. If you would like to leave the shop, type 'leave'.")
 
 
@@ -181,9 +221,9 @@ def up_facing_doors(room, row, column):
 def right_facing_doors(room, row, column):
     global unopenedDoors
     if unopenedDoors > 1:
-        selection = 1 #random.randrange(1, 4, 1)
+        selection = random.randrange(1, 4, 1)
     else:
-        selection = 3  # random.randrange(3, 5, 1)
+        selection = random.randrange(3, 5, 1)
     unopenedDoors -= 1
     if selection == 1:
         return MediumRoomRightDoor(room, row, column)
@@ -244,9 +284,9 @@ class MediumRoomRightDoor:
         self.startColumn = 5
         self.connectedRow = row
         self.connectedColumn = column
-        self.tables = 0 #random.randrange(0, 4, 1)
-        self.chests = 0 #random.randrange(0, 4, 1)
-        self.enemies = 3 #random.randrange(0, 4, 1)
+        self.tables = random.randrange(0, 4, 1)
+        self.chests = random.randrange(0, 4, 1)
+        self.enemies = random.randrange(0, 4, 1)
         if self.tables == 1:
             self.room[3][1] = 'T'
         elif self.tables == 2:

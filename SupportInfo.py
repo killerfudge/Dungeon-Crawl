@@ -52,11 +52,6 @@ armorOptions = [Armor("Leather", 1, 0.5, 5)]
 characterLevel = 1
 
 
-def increase_level():
-    global characterLevel
-    characterLevel += 1
-
-
 def attack(accuracy, damage, weapon, target):
     armor = target.dexterity + target.equippedArmor.defense
     if random.randrange(1, 20) + accuracy > armor:
