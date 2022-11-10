@@ -26,33 +26,30 @@ class Goblin:
         check_column = self.current_column
         up = True
         while not near_character:
-            while not (self.currentRoom.room[check_row][check_column] == "W" or
-                       self.currentRoom.room[check_row][check_column] == "D") and not near_character:
+            while not (self.currentRoom.room[check_row][check_column] == "W" or self.currentRoom.room[check_row][check_column] == "D") and not near_character:
                 if self.currentRoom.room[check_row][check_column] == "Y":
                     near_character = True
                     character_row = check_row
                     character_column = check_column
                 check_column -= 1
             check_column = self.current_column + 1
-            while not (self.currentRoom.room[check_row][check_column] == "W" or
-                       self.currentRoom.room[check_row][check_column] == "D") and not near_character:
+            while not (self.currentRoom.room[check_row][check_column] == "W" or self.currentRoom.room[check_row][check_column] == "D") and not near_character:
                 if self.currentRoom.room[check_row][check_column] == "Y":
                     near_character = True
                     character_row = check_row
                     character_column = check_column
                 check_column += 1
             check_column = self.current_column
+            if (self.currentRoom.room[check_row][check_column] == "W" or self.currentRoom.room[check_row][check_column] == "D") and not near_character:
+                if up:
+                    up = False
+                    check_row = self.current_row
+                else:
+                    break
             if up:
                 check_row -= 1
             else:
                 check_row += 1
-            if (self.currentRoom.room[check_row][check_column] == "W" or
-                    self.currentRoom.room[check_row][check_column] == "D") and not near_character:
-                if up:
-                    up = False
-                    check_row = self.current_row + 1
-                else:
-                    break
         if near_character:
             row_distance = character_row - self.current_row
             column_distance = character_column - self.current_column
@@ -129,17 +126,17 @@ class GoblinScout:
                     character_column = check_column
                 check_column += 1
             check_column = self.current_column
-            if up:
-                check_row -= 1
-            else:
-                check_row += 1
             if (self.currentRoom.room[check_row][check_column] == "W" or
                     self.currentRoom.room[check_row][check_column] == "D") and not near_character:
                 if up:
                     up = False
-                    check_row = self.current_row + 1
+                    check_row = self.current_row
                 else:
                     break
+            if up:
+                check_row -= 1
+            else:
+                check_row += 1
         if near_character:
             row_distance = character_row - self.current_row
             column_distance = character_column - self.current_column
@@ -216,17 +213,17 @@ class GoblinWarrior:
                     character_column = check_column
                 check_column += 1
             check_column = self.current_column
-            if up:
-                check_row -= 1
-            else:
-                check_row += 1
             if (self.currentRoom.room[check_row][check_column] == "W" or
                     self.currentRoom.room[check_row][check_column] == "D") and not near_character:
                 if up:
                     up = False
-                    check_row = self.current_row + 1
+                    check_row = self.current_row
                 else:
                     break
+            if up:
+                check_row -= 1
+            else:
+                check_row += 1
         if near_character:
             row_distance = character_row - self.current_row
             column_distance = character_column - self.current_column
@@ -303,21 +300,21 @@ class GoblinArcher:
                     character_column = check_column
                 check_column += 1
             check_column = self.current_column
-            if up:
-                check_row -= 1
-            else:
-                check_row += 1
             if (self.currentRoom.room[check_row][check_column] == "W" or
                     self.currentRoom.room[check_row][check_column] == "D") and not near_character:
                 if up:
                     up = False
-                    check_row = self.current_row + 1
+                    check_row = self.current_row
                 else:
                     break
+            if up:
+                check_row -= 1
+            else:
+                check_row += 1
         if near_character:
             row_distance = character_row - self.current_row
             column_distance = character_column - self.current_column
-            if row_distance + column_distance <= self.equippedWeapon.range:
+            if abs(row_distance) + abs(column_distance) <= self.equippedWeapon.range:
                 print("The " + self.name + " attacks you!")
                 SupportInfo.attack(self.dexterity, self.strength, self.equippedWeapon, player)
             elif row_distance < 0 and column_distance <= 0:
