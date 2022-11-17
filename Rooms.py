@@ -10,176 +10,376 @@ class Shop:
     def __init__(self):
         self.knives = 20
         self.arrows = 20
+        self.minorPotions = random.randrange(0, 6, 1)
+        self.moderatePotions = random.randrange(0, 4, 1)
+        self.majorPotions = random.randrange(0, 2, 1)
         selection = random.randrange(0, len(weaponOptions), 1)
         self.weapon = weaponOptions[selection]
         selection = random.randrange(0, len(armorOptions), 1)
         self.armor = armorOptions[selection]
 
     def shop(self, character):
-        selection = ""
-        while selection.lower() != "leave" and selection.lower() != "nothing":
-            if self.knives > 0:
-                print(str(self.knives) + " throwing knives: 2 gold each")
-            if self.arrows > 0:
-                print(str(self.arrows) + " arrows: 5 gold each")
-            if self.weapon:
-                print(self.weapon.name + ": " + str(self.weapon.gold) + " gold")
-            if self.armor:
-                print(self.armor.name + ": " + str(self.armor.gold) + " gold")
-            print("You have " + str(character.gold) + " gold.")
-            selection = input("What would you like to buy? Or would you prefer to sell? (Type item name.)")
-            if selection.lower() == "knives" or selection.lower() == "knife":
-                number = input("How many knives do you want to buy? max: " + str(self.knives) + " ")
-                if number.isdigit():
-                    if int(number) > self.knives or int(number) <= 0:
-                        print("Invalid number of knives.")
-                    else:
-                        if character.gold >= 2 * int(number):
-                            character.knives += int(number)
-                            character.gold -= 2 * int(number)
-                            self.knives -= int(number)
-                            print("Knives acquired.")
-                        else:
-                            print("You don't have enough gold.")
-                else:
-                    print("Invalid input.")
-            elif selection.lower() == "arrows" or selection.lower() == "arrow":
-                number = input("How many arrows do you want to buy? max: " + str(self.arrows) + " ")
-                if number.isdigit():
-                    if int(number) > self.knives or int(number) <= 0:
-                        print("Invalid number of arrows.")
-                    else:
-                        if character.gold >= 5 * int(number):
-                            character.arrows += int(number)
-                            character.gold -= 5 * int(number)
-                            self.arrows -= int(number)
-                            print("Arrows acquired.")
-                        else:
-                            print("You don't have enough gold.")
-                else:
-                    print("Invalid input.")
-            elif selection.lower() == self.weapon.name.lower():
-                if character.gold >= self.weapon.gold:
-                    character.gold -= self.weapon.gold
-                    equip = input(self.weapon.name + " acquired. Would you like to equip it?")
-                    if equip.lower() == "yes":
-                        character.storedWeapons.append(character.equippedWeapon)
-                        character.equippedWeapon = self.weapon
-                    else:
-                        print(self.weapon.name + " put away.")
-                        character.storedWeapons.append(self.weapon)
-                else:
-                    print("You don't have enough gold.")
-            elif selection.lower() == self.armor.name.lower():
-                if character.gold >= self.armor.gold:
-                    character.gold -= self.armor.gold
-                    equip = input(self.armor.name + " armor acquired. Do you want to equip it? ")
-                    if equip.lower() == "yes":
-                        character.storedArmor.append(character.equippedArmor)
-                        character.equippedArmor = self.armor
-                    else:
-                        print(self.armor.name + " put away.")
-                        character.storedWeapons.append(self.armor)
-                else:
-                    print("You don't have enough gold.")
-            elif selection.lower() == "sell":
-                print("What would you like to sell?")
-                print("Equipped weapon: " + character.equippedWeapon.print_details())
-                print()
-                for stored_weapon in character.storedWeapons:
-                    print("Stored weapons: " + stored_weapon.print_details())
-                    print()
-                if character.equippedArmor.name != "None":
-                    print("Equipped armor: " + character.equippedArmor.print_details())
-                    print()
-                for stored_armor in character.storedArmor:
-                    if stored_armor.name != "None":
-                        print("Stored armor: " + stored_armor.print_details())
-                        print()
-                selling = input()
-                if selling.lower() == character.equippedWeapon.name.lower():
-                    print(character.equippedWeapon.name + " sold for " + str(character.equippedWeapon.gold))
-                    character.gold += character.equippedWeapon.gold
-                    if character.storedWeapons:
-                        equipped = False
-                        for stored_weapon in character.storedWeapons:
-                            choice = input("Would you like to equip " + stored_weapon.name + "? ")
-                            if choice.lower() == "yes":
-                                character.equippedWeapon = stored_weapon
-                                character.storedWeapons.remove(stored_weapon)
-                                equipped = True
-                                break
-                        if not equipped:
-                            character.equippedWeapon = Weapon("Fist", 1, 2, 0, 1)
-                elif selling.lower() == character.equippedArmor.name.lower():
-                    print(character.equippedArmor.name + " sold for " + str(character.equippedArmor.gold))
-                    character.gold += character.equippedArmor.gold
-                    if character.storedArmors:
-                        equipped = False
-                        for stored_armor in character.storedArmor:
-                            choice = input("Would you like to equip " + stored_armor.name + "? ")
-                            if choice.lower() == "yes":
-                                character.equippedArmor = stored_armor
-                                character.storedArmors.remove(stored_armor)
-                                equipped = True
-                                break
-                        if not equipped:
-                            character.equippedArmor = Armor("None", 0, 0)
-                elif selling.lower() == "knives" or selling.lower() == "throwing knives":
-                    if character.knives == 0:
-                        print("You don't have any throwing knives to sell.")
-                    else:
-                        knives = input("You have " + str(character.knives) + " throwing knives to sell. How many do you"
-                                                                             " want to sell for 1 gold each?")
-                        if knives.isdigit():
-                            if 0 < int(knives) <= character.knives:
-                                print(knives + " throwing knives sold.")
-                                self.knives += int(knives)
-                                character.knives -= int(knives)
-                                character.gold += int(knives)
-                            elif int(knives) > character.knives:
-                                print("You don't have that many knives.")
-                            else:
+        try:
+            selection = ""
+            while selection.lower() != "leave" and selection.lower() != "nothing":
+                if self.knives > 0:
+                    print(str(self.knives) + " throwing knives: 2 gold each")
+                if self.arrows > 0:
+                    print(str(self.arrows) + " arrows: 5 gold each")
+                if self.minorPotions > 0:
+                    print(str(self.minorPotions) + " minor potions: 5 gold each")
+                if self.moderatePotions > 0:
+                    print(str(self.moderatePotions) + " moderate potions: 10 gold each")
+                if self.majorPotions > 0:
+                    print(str(self.majorPotions) + " major potions: 15 gold each")
+                if self.weapon:
+                    print(self.weapon.name + ": " + str(self.weapon.gold) + " gold")
+                if self.armor:
+                    print(self.armor.name + ": " + str(self.armor.gold) + " gold")
+                print("You have " + str(character.gold) + " gold.")
+                selection = input("What would you like to buy? Or would you prefer to sell? (Type item name.)")
+                if selection.lower() == "knives" or selection.lower() == "knife" or \
+                        selection.lower() == "throwing knife":
+                    if self.knives <= 0:
+                        print("There are no throwing knives for sale.")
+                    elif self.knives > 1:
+                        number = input("How many knives do you want to buy? max: " + str(self.knives) + " ")
+                        if number.isdigit():
+                            if int(number) > self.knives or int(number) <= 0:
                                 print("Invalid number of knives.")
-                        else:
-                            print("Invalid input.")
-                elif selling.lower() == "arrows":
-                    if character.arrows == 0:
-                        print("You don't have any arrows to sell.")
-                    else:
-                        arrows = input("You have " + str(character.arrows) + " arrows to sell. How many do you want to "
-                                                                             "sell for 2 gold each?")
-                        if arrows.isdigit():
-                            if 0 < int(arrows) <= character.arrows:
-                                print(arrows + " arrows sold.")
-                                self.arrows += int(arrows)
-                                character.arrows -= int(arrows)
-                                character.gold += 2 * int(arrows)
-                            elif int(arrows) > character.arrows:
-                                print("You don't have that many arrows.")
                             else:
-                                print("Invalid number of arrows.")
+                                if character.gold >= 2 * int(number):
+                                    character.knives += int(number)
+                                    character.gold -= 2 * int(number)
+                                    self.knives -= int(number)
+                                    print("Knives acquired.")
+                                else:
+                                    print("You don't have enough gold.")
                         else:
                             print("Invalid input.")
+                    else:
+                        if character.gold >= 2:
+                            character.knives += 1
+                            character.gold -= 2
+                            self.knives -= 1
+                            print("Knife acquired.")
+                        else:
+                            print("You don't have enough gold.")
+                elif selection.lower() == "arrows" or selection.lower() == "arrow":
+                    if self.arrows <= 0:
+                        print("There are no arrows for sale.")
+                    elif self.arrows > 1:
+                        number = input("How many arrows do you want to buy? max: " + str(self.arrows) + " ")
+                        if number.isdigit():
+                            if int(number) > self.arrows or int(number) <= 0:
+                                print("Invalid number of arrows.")
+                            else:
+                                if character.gold >= 5 * int(number):
+                                    character.arrows += int(number)
+                                    character.gold -= 5 * int(number)
+                                    self.arrows -= int(number)
+                                    print("Arrows acquired.")
+                                else:
+                                    print("You don't have enough gold.")
+                        else:
+                            print("Invalid input.")
+                    else:
+                        if character.gold >= 5:
+                            character.gold -= 5
+                            character.arrows += 1
+                            self.arrows -= 1
+                            print("Arrow acquired.")
+                        else:
+                            print("You don't have enough gold.")
+                elif selection.lower() == "minor potion":
+                    if self.minorPotions <= 0:
+                        print("There are no minor potions for sale.")
+                    elif self.minorPotions > 1:
+                        number = input("How many minor potions do you want to buy? ")
+                        if number.isdigit():
+                            if int(number) > self.minorPotions or int(number) <= 0:
+                                print("Invalid number of minor potions.")
+                            else:
+                                if character.gold >= 5 * int(number):
+                                    character.gold -= 5 * int(number)
+                                    character.minorPotions += int(number)
+                                    self.minorPotions -= int(number)
+                                    print("Minor potions acquired.")
+                                else:
+                                    print("You don't have enough gold.")
+                        else:
+                            print("Invalid input.")
+                    else:
+                        if character.gold >= 5:
+                            character.gold -= 5
+                            character.minorPotions += 1
+                            self.minorPotions -= 1
+                            print("Minor potion acquired.")
+                        else:
+                            print("You don't have enough gold.")
+                elif selection.lower() == "moderate potion":
+                    if self.moderatePotions <= 0:
+                        print("There are no moderate potions for sale.")
+                    elif self.moderatePotions > 1:
+                        number = input("How many moderate potions do you want to buy? ")
+                        if number.isdigit():
+                            if int(number) > self.moderatePotions or int(number) <= 0:
+                                print("Invalid number of moderate potions.")
+                            else:
+                                if character.gold >= 10 * int(number):
+                                    character.gold -= 10 * int(number)
+                                    character.moderatePotions += int(number)
+                                    self.moderatePotions -= int(number)
+                                    print("Moderate potions acquired.")
+                                else:
+                                    print("You don't have enough gold.")
+                        else:
+                            print("Invalid input.")
+                    else:
+                        if character.gold >= 10:
+                            character.gold -= 10
+                            character.moderatePotions += 1
+                            self.moderatePotions -= 1
+                            print("Moderate potion acquired.")
+                        else:
+                            print("You don't have enough gold.")
+                elif selection.lower() == "major potion":
+                    if self.majorPotions <= 0:
+                        print("There are no major potions for sale.")
+                    elif self.majorPotions > 1:
+                        number = input("How many major potions do you want to buy? ")
+                        if number.isdigit():
+                            if int(number) > self.majorPotions or int(number) <= 0:
+                                print("Invalid number of major potions.")
+                            else:
+                                if character.gold >= 15 * int(number):
+                                    character.gold -= 15 * int(number)
+                                    character.majorPotions += int(number)
+                                    self.majorPotions -= int(number)
+                                    print("Major potions acquired.")
+                                else:
+                                    print("You don't have enough gold.")
+                        else:
+                            print("Invalid input.")
+                    else:
+                        if character.gold >= 15:
+                            character.gold -= 15
+                            character.majorPotions += 1
+                            self.majorPotions -= 1
+                            print("Major potion acquired.")
+                        else:
+                            print("You don't have enough gold.")
+                elif selection.lower() == self.weapon.name.lower():
+                    if character.gold >= self.weapon.gold:
+                        character.gold -= self.weapon.gold
+                        equip = input(self.weapon.name + " acquired. Would you like to equip it?")
+                        if equip.lower() == "yes":
+                            found = False
+                            for weapon in character.storedWeapons:
+                                if weapon[0].name == character.equippedWeapon.name:
+                                    weapon[1] += 1
+                                    found = True
+                            if not found:
+                                character.storedWeapons.append([character.equippedWeapon, 1])
+                            character.equippedWeapon = self.weapon
+                        else:
+                            print(self.weapon.name + " put away.")
+                            character.storedWeapons.append(self.weapon)
+                    else:
+                        print("You don't have enough gold.")
+                elif selection.lower() == self.armor.name.lower():
+                    if character.gold >= self.armor.gold:
+                        character.gold -= self.armor.gold
+                        equip = input(self.armor.name + " armor acquired. Do you want to equip it? ")
+                        if equip.lower() == "yes":
+                            character.storedArmor.append(character.equippedArmor)
+                            character.equippedArmor = self.armor
+                        else:
+                            print(self.armor.name + " put away.")
+                            character.storedWeapons.append(self.armor)
+                    else:
+                        print("You don't have enough gold.")
+                elif selection.lower() == "sell":
+                    print("What would you like to sell?")
+                    print("Equipped weapon: " + character.equippedWeapon.print_details())
+                    print()
+                    if len(character.storedWeapons) >= 1:
+                        print("Stored weapons:")
+                        for stored_weapon in character.storedWeapons:
+                            print(str(stored_weapon[1]) + " " + stored_weapon[0].print_details())
+                            print()
+                    if character.equippedArmor.name != "None":
+                        print("Equipped armor: " + character.equippedArmor.print_details())
+                        print()
+                    if len(character.storedArmor) >= 1:
+                        print("Stored armor:")
+                        for stored_armor in character.storedArmor:
+                            if stored_armor.name != "None":
+                                print(stored_armor.print_details())
+                                print()
+                    selling = input()
+                    if selling.lower() == character.equippedWeapon.name.lower():
+                        sell = input("Do you want to sell your equipped weapon? ")
+                        if sell.lower() == "yes" or sell.lower() == "y":
+                            print(character.equippedWeapon.name + " sold for " + str(character.equippedWeapon.gold))
+                            character.gold += character.equippedWeapon.gold
+                            if character.storedWeapons:
+                                equipped = False
+                                for stored_weapon in character.storedWeapons:
+                                    choice = input("Would you like to equip " + stored_weapon[0].name + "? ")
+                                    if choice.lower() == "yes":
+                                        character.equippedWeapon = stored_weapon[0]
+                                        if stored_weapon[1] == 1:
+                                            character.storedWeapons.remove(stored_weapon)
+                                        else:
+                                            stored_weapon[1] -= 1
+                                        equipped = True
+                                        break
+                                if not equipped:
+                                    character.equippedWeapon = Weapon("Fist", 1, 2, 0, 1)
+                        else:
+                            for item in character.storedWeapons:
+                                if selling.lower() == item[0].name.lower():
+                                    print(item[0].name + " sold for " + str(item[0].gold))
+                                    character.gold += item[0].gold
+                                    if item[1] == 1:
+                                        character.storedWeapons.remove(item)
+                                    else:
+                                        item[1] -= 1
+                                    break
+                    elif selling.lower() == character.equippedArmor.name.lower():
+                        print(character.equippedArmor.name + " sold for " + str(character.equippedArmor.gold))
+                        character.gold += character.equippedArmor.gold
+                        if character.storedArmor:
+                            equipped = False
+                            for stored_armor in character.storedArmor:
+                                choice = input("Would you like to equip " + stored_armor.name + "? ")
+                                if choice.lower() == "yes":
+                                    character.equippedArmor = stored_armor
+                                    character.storedArmor.remove(stored_armor)
+                                    equipped = True
+                                    break
+                            if not equipped:
+                                character.equippedArmor = Armor("None", 0, 0)
+                    elif selling.lower() == "knives" or selling.lower() == "throwing knives":
+                        if character.knives == 0:
+                            print("You don't have any throwing knives to sell.")
+                        else:
+                            knives = input("You have " + str(character.knives) +
+                                           " throwing knives to sell. How many do you want to sell for 1 gold each?")
+                            if knives.isdigit():
+                                if 0 < int(knives) <= character.knives:
+                                    print(knives + " throwing knives sold.")
+                                    self.knives += int(knives)
+                                    character.knives -= int(knives)
+                                    character.gold += int(knives)
+                                elif int(knives) > character.knives:
+                                    print("You don't have that many knives.")
+                                else:
+                                    print("Invalid number of knives.")
+                            else:
+                                print("Invalid input.")
+                    elif selling.lower() == "arrows":
+                        if character.arrows == 0:
+                            print("You don't have any arrows to sell.")
+                        else:
+                            arrows = input("You have " + str(character.arrows) +
+                                           " arrows to sell. How many do you want to sell for 2 gold each?")
+                            if arrows.isdigit():
+                                if 0 < int(arrows) <= character.arrows:
+                                    print(arrows + " arrows sold.")
+                                    self.arrows += int(arrows)
+                                    character.arrows -= int(arrows)
+                                    character.gold += 2 * int(arrows)
+                                elif int(arrows) > character.arrows:
+                                    print("You don't have that many arrows.")
+                                else:
+                                    print("Invalid number of arrows.")
+                            else:
+                                print("Invalid input.")
+                    elif selling.lower() == "minor potion":
+                        if character.minorPotions == 0:
+                            print("You don't have any minor potions to sell.")
+                        else:
+                            potions = input("You have " + str(character.minorPotions) +
+                                            " minor potions to sell. How many do you want to sell for 2 gold each?")
+                            if potions.isdigit():
+                                if 0 < int(potions) <= character.minorPotions:
+                                    print(potions + " minor potions sold.")
+                                    self.minorPotions += int(potions)
+                                    character.minorPotions -= int(potions)
+                                    character.gold += 2 * int(potions)
+                                elif int(potions) > character.minorPotions:
+                                    print("You don't have that many minor potions.")
+                                else:
+                                    print("Invalid number of minor potions.")
+                            else:
+                                print("Invalid input.")
+                    elif selling.lower() == "moderate potion":
+                        if character.moderatePotions == 0:
+                            print("You don't have any moderate potions to sell.")
+                        else:
+                            potions = input("You have " + str(character.moderatePotions) +
+                                            " moderate potions to sell. How many do you want to sell for 5 gold each?")
+                            if potions.isdigit():
+                                if 0 < int(potions) <= character.moderatePotions:
+                                    print(potions + " moderate potions sold.")
+                                    self.moderatePotions += int(potions)
+                                    character.moderatePotions -= int(potions)
+                                    character.gold += 5 * int(potions)
+                                elif int(potions) > character.moderatePotions:
+                                    print("You don't have that many moderate potions.")
+                                else:
+                                    print("Invalid number of moderate potions.")
+                            else:
+                                print("Invalid input.")
+                    elif selling.lower() == "major potion":
+                        if character.majorPotions == 0:
+                            print("You don't have any major potions to sell.")
+                        else:
+                            potions = input("You have " + str(character.majorPotions) +
+                                            " major potions to sell. How many do you want to sell for 5 gold each?")
+                            if potions.isdigit():
+                                if 0 < int(potions) <= character.majorPotions:
+                                    print(potions + " major potions sold.")
+                                    self.majorPotions += int(potions)
+                                    character.majorPotions -= int(potions)
+                                    character.gold += 5 * int(potions)
+                                elif int(potions) > character.majorPotions:
+                                    print("You don't have that many major potions.")
+                                else:
+                                    print("Invalid number of major potions.")
+                            else:
+                                print("Invalid input.")
+                    else:
+                        sold = False
+                        for item in character.storedWeapons:
+                            if selling.lower() == item[0].name.lower():
+                                print(item[0].name + " sold for " + str(item[0].gold))
+                                character.gold += item[0].gold
+                                if item[1] == 1:
+                                    character.storedWeapons.remove(item)
+                                else:
+                                    item[1] -= 1
+                                sold = True
+                                break
+                        for item in character.storedArmor:
+                            if selling.lower() == item.name.lower():
+                                print(item.name + " sold for " + str(item.gold))
+                                character.gold += item.gold
+                                character.storedWeapons.remove(item)
+                                sold = True
+                                break
+                        if not sold:
+                            print("You don't have that item to sell")
                 else:
-                    sold = False
-                    for item in character.storedWeapons:
-                        if selling.lower() == item.name.lower():
-                            print(item.name + " sold for " + str(item.gold))
-                            character.gold += item.gold
-                            character.storedWeapons.remove(item)
-                            sold = True
-                    for item in character.storedArmor:
-                        if selling.lower() == item.name.lower():
-                            print(item.name + " sold for " + str(item.gold))
-                            character.gold += item.gold
-                            character.storedWeapons.remove(item)
-                            sold = True
-                    if not sold:
-                        print("You don't have that item to sell")
-            else:
-                if selection.lower() != "leave" and selection.lower() != "nothing":
-                    print("Invalid input. If you would like to leave the shop, type 'leave'.")
+                    if selection.lower() != "leave" and selection.lower() != "nothing":
+                        print("Invalid input. If you would like to leave the shop, type 'leave'.")
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when shopping.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 def down_facing_doors(room, row, column):
@@ -329,11 +529,17 @@ class OpeningRoom:
         activeCharacters.append(Goblin(self, 3, 5))
 
     def leave(self, mover, symbol):
-        mover.currentRoom = self.rightEntranceConnection
-        self.room[mover.current_row][mover.current_column - 1] = " "
-        mover.current_row = 3
-        mover.current_column = 1
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            mover.currentRoom = self.rightEntranceConnection
+            self.room[mover.current_row][mover.current_column - 1] = " "
+            mover.current_row = 3
+            mover.current_column = 1
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class MediumRoomRightDoor:
@@ -433,11 +639,17 @@ class MediumRoomRightDoor:
                 activeCharacters.append(choose_enemies(self, 4, 2))
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row][mover.current_column - 1] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row][mover.current_column - 1] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class MediumRoomLeftDoor:
@@ -537,11 +749,17 @@ class MediumRoomLeftDoor:
                 activeCharacters.append(choose_enemies(self, 4, 4))
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row][mover.current_column + 1] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row][mover.current_column + 1] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class MediumRoomTopDoor:
@@ -641,11 +859,17 @@ class MediumRoomTopDoor:
                 activeCharacters.append(choose_enemies(self, 4, 4))
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row][mover.current_column - 1] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row][mover.current_column - 1] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class MediumRoomBottomDoor:
@@ -745,11 +969,17 @@ class MediumRoomBottomDoor:
                 activeCharacters.append(choose_enemies(self, 2, 4))
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row - 1][mover.current_column] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row - 1][mover.current_column] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class LeftDoorLongTCorridor:
@@ -826,91 +1056,97 @@ class LeftDoorLongTCorridor:
             self.endDownColumn = 8
 
     def leave(self, mover, symbol):
-        if mover.current_row == 3 and mover.current_column == 0:
-            if self.leftConnection:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                mover.current_row = self.leftRow
-                mover.current_column = self.leftColumn
-                mover.currentRoom = self.leftEntrance
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            if mover.current_row == 3 and mover.current_column == 0:
+                if self.leftConnection:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    mover.current_row = self.leftRow
+                    mover.current_column = self.leftColumn
+                    mover.currentRoom = self.leftEntrance
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    self.leftEntrance = right_facing_doors(self, 3, 1)
+                    self.leftConnection = True
+                    self.leftRow = self.leftEntrance.startRow
+                    self.leftColumn = self.leftEntrance.startColumn
+                    mover.current_row = self.leftRow
+                    mover.current_column = self.leftColumn
+                    mover.currentRoom = self.leftEntrance
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 2 and mover.current_column == 2:
+                if self.corridorUpConnection:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    mover.currentRoom = self.corridorUp
+                    mover.current_row = self.corridorUpRow
+                    mover.current_column = self.corridorUpColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    self.corridorUp = down_facing_doors(self, 3, 2)
+                    self.corridorUpConnection = True
+                    self.corridorUpRow = self.corridorUp.startRow
+                    self.corridorUpColumn = self.corridorUp.startColumn
+                    mover.currentRoom = self.corridorUp
+                    mover.current_row = self.corridorUpRow
+                    mover.current_column = self.corridorUpColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 4 and mover.current_column == 5:
+                if self.corridorDownConnection:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    mover.currentRoom = self.corridorDown
+                    mover.current_row = self.corridorDownRow
+                    mover.current_column = self.corridorDownColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    self.corridorDown = up_facing_doors(self, 3, 5)
+                    self.corridorDownConnection = True
+                    self.corridorDownRow = self.corridorDown.startRow
+                    self.corridorDownColumn = self.corridorDown.startColumn
+                    mover.currentRoom = self.corridorDown
+                    mover.current_row = self.corridorDownRow
+                    mover.current_column = self.corridorDownColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 0 and mover.current_column == 8:
+                if self.endUpConnection:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    mover.currentRoom = self.endUp
+                    mover.current_row = self.endUpRow
+                    mover.current_column = self.endUpColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    self.endUp = down_facing_doors(self, 1, 8)
+                    self.endUpConnection = True
+                    self.endUpRow = self.endUp.startRow
+                    self.endUpColumn = self.endUp.startColumn
+                    mover.currentRoom = self.endUp
+                    mover.current_row = self.endUpRow
+                    mover.current_column = self.endUpColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
             else:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                self.leftEntrance = right_facing_doors(self, 3, 1)
-                self.leftConnection = True
-                self.leftRow = self.leftEntrance.startRow
-                self.leftColumn = self.leftEntrance.startColumn
-                mover.current_row = self.leftRow
-                mover.current_column = self.leftColumn
-                mover.currentRoom = self.leftEntrance
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 2 and mover.current_column == 2:
-            if self.corridorUpConnection:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                mover.currentRoom = self.corridorUp
-                mover.current_row = self.corridorUpRow
-                mover.current_column = self.corridorUpColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                self.corridorUp = down_facing_doors(self, 3, 2)
-                self.corridorUpConnection = True
-                self.corridorUpRow = self.corridorUp.startRow
-                self.corridorUpColumn = self.corridorUp.startColumn
-                mover.currentRoom = self.corridorUp
-                mover.current_row = self.corridorUpRow
-                mover.current_column = self.corridorUpColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 4 and mover.current_column == 5:
-            if self.corridorDownConnection:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                mover.currentRoom = self.corridorDown
-                mover.current_row = self.corridorDownRow
-                mover.current_column = self.corridorDownColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                self.corridorDown = up_facing_doors(self, 3, 5)
-                self.corridorDownConnection = True
-                self.corridorDownRow = self.corridorDown.startRow
-                self.corridorDownColumn = self.corridorDown.startColumn
-                mover.currentRoom = self.corridorDown
-                mover.current_row = self.corridorDownRow
-                mover.current_column = self.corridorDownColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 0 and mover.current_column == 8:
-            if self.endUpConnection:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                mover.currentRoom = self.endUp
-                mover.current_row = self.endUpRow
-                mover.current_column = self.endUpColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                self.endUp = down_facing_doors(self, 1, 8)
-                self.endUpConnection = True
-                self.endUpRow = self.endUp.startRow
-                self.endUpColumn = self.endUp.startColumn
-                mover.currentRoom = self.endUp
-                mover.current_row = self.endUpRow
-                mover.current_column = self.endUpColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        else:
-            if self.endDownConnection:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                mover.currentRoom = self.endDown
-                mover.current_row = self.endDownRow
-                mover.current_column = self.endDownColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                self.endDown = up_facing_doors(self, 5, 8)
-                self.endDownConnection = True
-                self.endDownRow = self.endDown.startRow
-                self.endDownColumn = self.endDown.startColumn
-                mover.currentRoom = self.endDown
-                mover.current_row = self.endDownRow
-                mover.current_column = self.endDownColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                if self.endDownConnection:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    mover.currentRoom = self.endDown
+                    mover.current_row = self.endDownRow
+                    mover.current_column = self.endDownColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    self.endDown = up_facing_doors(self, 5, 8)
+                    self.endDownConnection = True
+                    self.endDownRow = self.endDown.startRow
+                    self.endDownColumn = self.endDown.startColumn
+                    mover.currentRoom = self.endDown
+                    mover.current_row = self.endDownRow
+                    mover.current_column = self.endDownColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class RightDoorLongTCorridor:
@@ -987,91 +1223,97 @@ class RightDoorLongTCorridor:
             self.endDownColumn = 1
 
     def leave(self, mover, symbol):
-        if mover.current_row == 3 and mover.current_column == 9:
-            if self.rightConnection:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                mover.current_row = self.rightRow
-                mover.current_column = self.rightColumn
-                mover.currentRoom = self.right
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            if mover.current_row == 3 and mover.current_column == 9:
+                if self.rightConnection:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    mover.current_row = self.rightRow
+                    mover.current_column = self.rightColumn
+                    mover.currentRoom = self.right
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    self.right = left_facing_doors(self, 3, 8)
+                    self.rightConnection = True
+                    self.rightRow = self.right.startRow
+                    self.rightColumn = self.right.startColumn
+                    mover.current_row = self.rightRow
+                    mover.current_column = self.rightColumn
+                    mover.currentRoom = self.right
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 2 and mover.current_column == 4:
+                if self.corridorUpConnection:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    mover.currentRoom = self.corridorUp
+                    mover.current_row = self.corridorUpRow
+                    mover.current_column = self.corridorUpColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    self.corridorUp = down_facing_doors(self, 3, 4)
+                    self.corridorUpConnection = True
+                    self.corridorUpRow = self.corridorUp.startRow
+                    self.corridorUpColumn = self.corridorUp.startColumn
+                    mover.currentRoom = self.corridorUp
+                    mover.current_row = self.corridorUpRow
+                    mover.current_column = self.corridorUpColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 4 and mover.current_column == 7:
+                if self.corridorDownConnection:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    mover.currentRoom = self.corridorDown
+                    mover.current_row = self.corridorDownRow
+                    mover.current_column = self.corridorDownColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    self.corridorDown = up_facing_doors(self, 3, 7)
+                    self.corridorDownConnection = True
+                    self.corridorDownRow = self.corridorDown.startRow
+                    self.corridorDownColumn = self.corridorDown.startColumn
+                    mover.currentRoom = self.corridorDown
+                    mover.current_row = self.corridorDownRow
+                    mover.current_column = self.corridorDownColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 0 and mover.current_column == 1:
+                if self.endUpConnection:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    mover.currentRoom = self.endUp
+                    mover.current_row = self.endUpRow
+                    mover.current_column = self.endUpColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    self.endUp = down_facing_doors(self, 1, 1)
+                    self.endUpConnection = True
+                    self.endUpRow = self.endUp.startRow
+                    self.endUpColumn = self.endUp.startColumn
+                    mover.currentRoom = self.endUp
+                    mover.current_row = self.endUpRow
+                    mover.current_column = self.endUpColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
             else:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                self.right = left_facing_doors(self, 3, 8)
-                self.rightConnection = True
-                self.rightRow = self.right.startRow
-                self.rightColumn = self.right.startColumn
-                mover.current_row = self.rightRow
-                mover.current_column = self.rightColumn
-                mover.currentRoom = self.right
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 2 and mover.current_column == 4:
-            if self.corridorUpConnection:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                mover.currentRoom = self.corridorUp
-                mover.current_row = self.corridorUpRow
-                mover.current_column = self.corridorUpColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                self.corridorUp = down_facing_doors(self, 3, 4)
-                self.corridorUpConnection = True
-                self.corridorUpRow = self.corridorUp.startRow
-                self.corridorUpColumn = self.corridorUp.startColumn
-                mover.currentRoom = self.corridorUp
-                mover.current_row = self.corridorUpRow
-                mover.current_column = self.corridorUpColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 4 and mover.current_column == 7:
-            if self.corridorDownConnection:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                mover.currentRoom = self.corridorDown
-                mover.current_row = self.corridorDownRow
-                mover.current_column = self.corridorDownColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                self.corridorDown = up_facing_doors(self, 3, 7)
-                self.corridorDownConnection = True
-                self.corridorDownRow = self.corridorDown.startRow
-                self.corridorDownColumn = self.corridorDown.startColumn
-                mover.currentRoom = self.corridorDown
-                mover.current_row = self.corridorDownRow
-                mover.current_column = self.corridorDownColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 0 and mover.current_column == 1:
-            if self.endUpConnection:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                mover.currentRoom = self.endUp
-                mover.current_row = self.endUpRow
-                mover.current_column = self.endUpColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                self.endUp = down_facing_doors(self, 1, 1)
-                self.endUpConnection = True
-                self.endUpRow = self.endUp.startRow
-                self.endUpColumn = self.endUp.startColumn
-                mover.currentRoom = self.endUp
-                mover.current_row = self.endUpRow
-                mover.current_column = self.endUpColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        else:
-            if self.endDownConnection:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                mover.currentRoom = self.endDown
-                mover.current_row = self.endDownRow
-                mover.current_column = self.endDownColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                self.endDown = up_facing_doors(self, 5, 1)
-                self.endDownConnection = True
-                self.endDownRow = self.endDown.startRow
-                self.endDownColumn = self.endDown.startColumn
-                mover.currentRoom = self.endDown
-                mover.current_row = self.endDownRow
-                mover.current_column = self.endDownColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                if self.endDownConnection:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    mover.currentRoom = self.endDown
+                    mover.current_row = self.endDownRow
+                    mover.current_column = self.endDownColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    self.endDown = up_facing_doors(self, 5, 1)
+                    self.endDownConnection = True
+                    self.endDownRow = self.endDown.startRow
+                    self.endDownColumn = self.endDown.startColumn
+                    mover.currentRoom = self.endDown
+                    mover.current_row = self.endDownRow
+                    mover.current_column = self.endDownColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class UpDoorLongTCorridor:
@@ -1151,91 +1393,97 @@ class UpDoorLongTCorridor:
             self.upColumn = 3
 
     def leave(self, mover, symbol):
-        if mover.current_row == 8 and mover.current_column == 0:
-            if self.bottomLeftConnection:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                mover.current_row = self.bottomLeftRow
-                mover.current_column = self.bottomLeftColumn
-                mover.currentRoom = self.bottomLeft
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            if mover.current_row == 8 and mover.current_column == 0:
+                if self.bottomLeftConnection:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    mover.current_row = self.bottomLeftRow
+                    mover.current_column = self.bottomLeftColumn
+                    mover.currentRoom = self.bottomLeft
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    self.bottomLeft = right_facing_doors(self, 8, 1)
+                    self.bottomLeftConnection = True
+                    self.bottomLeftRow = self.bottomLeft.startRow
+                    self.bottomLeftColumn = self.bottomLeft.startColumn
+                    mover.current_row = self.bottomLeftRow
+                    mover.current_column = self.bottomLeftColumn
+                    mover.currentRoom = self.bottomLeft
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 5 and mover.current_column == 2:
+                if self.corridorLeftConnection:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    mover.currentRoom = self.corridorLeft
+                    mover.current_row = self.corridorLeftRow
+                    mover.current_column = self.corridorLeftColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    self.corridorLeft = right_facing_doors(self, 5, 3)
+                    self.corridorLeftConnection = True
+                    self.corridorLeftRow = self.corridorLeft.startRow
+                    self.corridorLeftColumn = self.corridorLeft.startColumn
+                    mover.currentRoom = self.corridorLeft
+                    mover.current_row = self.corridorLeftRow
+                    mover.current_column = self.corridorLeftColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 8 and mover.current_column == 6:
+                if self.bottomRightConnection:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    mover.currentRoom = self.bottomRight
+                    mover.current_row = self.bottomRightRow
+                    mover.current_column = self.bottomRightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    self.bottomRight = left_facing_doors(self, 8, 5)
+                    self.bottomRightConnection = True
+                    self.bottomRightRow = self.bottomRight.startRow
+                    self.bottomRightColumn = self.bottomRight.startColumn
+                    mover.currentRoom = self.bottomRight
+                    mover.current_row = self.bottomRightRow
+                    mover.current_column = self.bottomRightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 2 and mover.current_column == 4:
+                if self.corridorRightConnection:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    mover.currentRoom = self.corridorRight
+                    mover.current_row = self.corridorRightRow
+                    mover.current_column = self.corridorRightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    self.corridorRight = left_facing_doors(self, 2, 3)
+                    self.corridorRightConnection = True
+                    self.corridorRightRow = self.corridorRight.startRow
+                    self.corridorRightColumn = self.corridorRight.startColumn
+                    mover.currentRoom = self.corridorRight
+                    mover.current_row = self.corridorRightRow
+                    mover.current_column = self.corridorRightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
             else:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                self.bottomLeft = right_facing_doors(self, 8, 1)
-                self.bottomLeftConnection = True
-                self.bottomLeftRow = self.bottomLeft.startRow
-                self.bottomLeftColumn = self.bottomLeft.startColumn
-                mover.current_row = self.bottomLeftRow
-                mover.current_column = self.bottomLeftColumn
-                mover.currentRoom = self.bottomLeft
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 5 and mover.current_column == 2:
-            if self.corridorLeftConnection:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                mover.currentRoom = self.corridorLeft
-                mover.current_row = self.corridorLeftRow
-                mover.current_column = self.corridorLeftColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                self.corridorLeft = right_facing_doors(self, 5, 3)
-                self.corridorLeftConnection = True
-                self.corridorLeftRow = self.corridorLeft.startRow
-                self.corridorLeftColumn = self.corridorLeft.startColumn
-                mover.currentRoom = self.corridorLeft
-                mover.current_row = self.corridorLeftRow
-                mover.current_column = self.corridorLeftColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 8 and mover.current_column == 6:
-            if self.bottomRightConnection:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                mover.currentRoom = self.bottomRight
-                mover.current_row = self.bottomRightRow
-                mover.current_column = self.bottomRightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                self.bottomRight = left_facing_doors(self, 8, 5)
-                self.bottomRightConnection = True
-                self.bottomRightRow = self.bottomRight.startRow
-                self.bottomRightColumn = self.bottomRight.startColumn
-                mover.currentRoom = self.bottomRight
-                mover.current_row = self.bottomRightRow
-                mover.current_column = self.bottomRightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 2 and mover.current_column == 4:
-            if self.corridorRightConnection:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                mover.currentRoom = self.corridorRight
-                mover.current_row = self.corridorRightRow
-                mover.current_column = self.corridorRightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                self.corridorRight = left_facing_doors(self, 2, 3)
-                self.corridorRightConnection = True
-                self.corridorRightRow = self.corridorRight.startRow
-                self.corridorRightColumn = self.corridorRight.startColumn
-                mover.currentRoom = self.corridorRight
-                mover.current_row = self.corridorRightRow
-                mover.current_column = self.corridorRightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        else:
-            if self.upConnection:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                mover.currentRoom = self.up
-                mover.current_row = self.upRow
-                mover.current_column = self.upColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                self.up = down_facing_doors(self, 1, 3)
-                self.upConnection = True
-                self.upRow = self.up.startRow
-                self.upColumn = self.up.startColumn
-                mover.currentRoom = self.up
-                mover.current_row = self.upRow
-                mover.current_column = self.upColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                if self.upConnection:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    mover.currentRoom = self.up
+                    mover.current_row = self.upRow
+                    mover.current_column = self.upColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    self.up = down_facing_doors(self, 1, 3)
+                    self.upConnection = True
+                    self.upRow = self.up.startRow
+                    self.upColumn = self.up.startColumn
+                    mover.currentRoom = self.up
+                    mover.current_row = self.upRow
+                    mover.current_column = self.upColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class DownDoorLongTCorridor:
@@ -1315,91 +1563,97 @@ class DownDoorLongTCorridor:
             self.downColumn = 3
 
     def leave(self, mover, symbol):
-        if mover.current_row == 1 and mover.current_column == 0:
-            if self.topLeftConnection:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                mover.current_row = self.topLeftRow
-                mover.current_column = self.topLeftColumn
-                mover.currentRoom = self.topLeft
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            if mover.current_row == 1 and mover.current_column == 0:
+                if self.topLeftConnection:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    mover.current_row = self.topLeftRow
+                    mover.current_column = self.topLeftColumn
+                    mover.currentRoom = self.topLeft
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    self.topLeft = right_facing_doors(self, 1, 1)
+                    self.topLeftConnection = True
+                    self.topLeftRow = self.topLeft.startRow
+                    self.topLeftColumn = self.topLeft.startColumn
+                    mover.current_row = self.topLeftRow
+                    mover.current_column = self.topLeftColumn
+                    mover.currentRoom = self.topLeft
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 7 and mover.current_column == 2:
+                if self.corridorLeftConnection:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    mover.currentRoom = self.corridorLeft
+                    mover.current_row = self.corridorLeftRow
+                    mover.current_column = self.corridorLeftColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    self.corridorLeft = right_facing_doors(self, 7, 3)
+                    self.corridorLeftConnection = True
+                    self.corridorLeftRow = self.corridorLeft.startRow
+                    self.corridorLeftColumn = self.corridorLeft.startColumn
+                    mover.currentRoom = self.corridorLeft
+                    mover.current_row = self.corridorLeftRow
+                    mover.current_column = self.corridorLeftColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 1 and mover.current_column == 6:
+                if self.topRightConnection:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    mover.currentRoom = self.topRight
+                    mover.current_row = self.topRightRow
+                    mover.current_column = self.topRightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    self.topRight = left_facing_doors(self, 1, 5)
+                    self.topRightConnection = True
+                    self.topRightRow = self.topRight.startRow
+                    self.topRightColumn = self.topRight.startColumn
+                    mover.currentRoom = self.topRight
+                    mover.current_row = self.topRightRow
+                    mover.current_column = self.topRightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 4 and mover.current_column == 4:
+                if self.corridorRightConnection:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    mover.currentRoom = self.corridorRight
+                    mover.current_row = self.corridorRightRow
+                    mover.current_column = self.corridorRightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    self.corridorRight = left_facing_doors(self, 4, 3)
+                    self.corridorRightConnection = True
+                    self.corridorRightRow = self.corridorRight.startRow
+                    self.corridorRightColumn = self.corridorRight.startColumn
+                    mover.currentRoom = self.corridorRight
+                    mover.current_row = self.corridorRightRow
+                    mover.current_column = self.corridorRightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
             else:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                self.topLeft = right_facing_doors(self, 1, 1)
-                self.topLeftConnection = True
-                self.topLeftRow = self.topLeft.startRow
-                self.topLeftColumn = self.topLeft.startColumn
-                mover.current_row = self.topLeftRow
-                mover.current_column = self.topLeftColumn
-                mover.currentRoom = self.topLeft
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 7 and mover.current_column == 2:
-            if self.corridorLeftConnection:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                mover.currentRoom = self.corridorLeft
-                mover.current_row = self.corridorLeftRow
-                mover.current_column = self.corridorLeftColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                self.corridorLeft = right_facing_doors(self, 7, 3)
-                self.corridorLeftConnection = True
-                self.corridorLeftRow = self.corridorLeft.startRow
-                self.corridorLeftColumn = self.corridorLeft.startColumn
-                mover.currentRoom = self.corridorLeft
-                mover.current_row = self.corridorLeftRow
-                mover.current_column = self.corridorLeftColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 1 and mover.current_column == 6:
-            if self.topRightConnection:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                mover.currentRoom = self.topRight
-                mover.current_row = self.topRightRow
-                mover.current_column = self.topRightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                self.topRight = left_facing_doors(self, 1, 5)
-                self.topRightConnection = True
-                self.topRightRow = self.topRight.startRow
-                self.topRightColumn = self.topRight.startColumn
-                mover.currentRoom = self.topRight
-                mover.current_row = self.topRightRow
-                mover.current_column = self.topRightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 4 and mover.current_column == 4:
-            if self.corridorRightConnection:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                mover.currentRoom = self.corridorRight
-                mover.current_row = self.corridorRightRow
-                mover.current_column = self.corridorRightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                self.corridorRight = left_facing_doors(self, 4, 3)
-                self.corridorRightConnection = True
-                self.corridorRightRow = self.corridorRight.startRow
-                self.corridorRightColumn = self.corridorRight.startColumn
-                mover.currentRoom = self.corridorRight
-                mover.current_row = self.corridorRightRow
-                mover.current_column = self.corridorRightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        else:
-            if self.downConnection:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                mover.currentRoom = self.down
-                mover.current_row = self.downRow
-                mover.current_column = self.downColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                self.down = up_facing_doors(self, 1, 3)
-                self.downConnection = True
-                self.downRow = self.down.startRow
-                self.downColumn = self.down.startColumn
-                mover.currentRoom = self.down
-                mover.current_row = self.downRow
-                mover.current_column = self.downColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                if self.downConnection:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    mover.currentRoom = self.down
+                    mover.current_row = self.downRow
+                    mover.current_column = self.downColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    self.down = up_facing_doors(self, 8, 3)
+                    self.downConnection = True
+                    self.downRow = self.down.startRow
+                    self.downColumn = self.down.startColumn
+                    mover.currentRoom = self.down
+                    mover.current_row = self.downRow
+                    mover.current_column = self.downColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class SmallRoomBottomDoor:
@@ -1423,11 +1677,17 @@ class SmallRoomBottomDoor:
             self.shop = Shop()
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row - 1][mover.current_column] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row - 1][mover.current_column] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class SmallRoomLeftDoor:
@@ -1452,11 +1712,17 @@ class SmallRoomLeftDoor:
             self.shop = Shop()
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row][mover.current_column + 1] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row][mover.current_column + 1] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class SmallRoomRightDoor:
@@ -1481,11 +1747,17 @@ class SmallRoomRightDoor:
             self.shop = Shop()
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row][mover.current_column - 1] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row][mover.current_column - 1] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class SmallRoomTopDoor:
@@ -1509,11 +1781,17 @@ class SmallRoomTopDoor:
             self.shop = Shop()
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row + 1][mover.current_column] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row + 1][mover.current_column] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class VerticalCorridor:
@@ -1643,74 +1921,80 @@ class VerticalCorridor:
             activeCharacters.append(choose_enemies(self, 6, 3))
 
     def leave(self, mover, symbol):
-        if mover.current_row == 0 and mover.current_column == 2:
-            if self.upEntrance:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                mover.currentRoom = self.upDoor
-                mover.current_row = self.upRow
-                mover.current_column = self.upColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                self.upDoor = down_facing_doors(self, 1, 2)
-                self.upEntrance = True
-                self.upRow = self.upDoor.startRow
-                self.upColumn = self.upDoor.startColumn
-                mover.currentRoom = self.upDoor
-                mover.current_row = self.upRow
-                mover.current_column = self.upColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 8 and mover.current_column == 2:
-            if self.bottomEntrance:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                mover.currentRoom = self.bottomDoor
-                mover.current_row = self.bottomRow
-                mover.current_column = self.bottomColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                self.bottomDoor = up_facing_doors(self, 7, 2)
-                self.bottomEntrance = True
-                self.bottomRow = self.bottomDoor.startRow
-                self.bottomColumn = self.bottomDoor.startColumn
-                mover.currentRoom = self.bottomDoor
-                mover.current_row = self.bottomRow
-                mover.current_column = self.bottomColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 4 and mover.current_column == 1:
-            if self.leftEntrance:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                mover.currentRoom = self.leftDoor
-                mover.current_row = self.leftRow
-                mover.current_column = self.leftColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                self.leftDoor = right_facing_doors(self, 4, 2)
-                self.leftEntrance = True
-                self.leftRow = self.leftDoor.startRow
-                self.leftColumn = self.leftDoor.startColumn
-                mover.currentRoom = self.leftDoor
-                mover.current_row = self.leftRow
-                mover.current_column = self.leftColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 4 and mover.current_column == 3:
-            if self.rightEntrance:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                mover.currentRoom = self.rightDoor
-                mover.current_row = self.rightRow
-                mover.current_column = self.rightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                self.rightDoor = left_facing_doors(self, 4, 2)
-                self.rightEntrance = True
-                self.rightRow = self.rightDoor.startRow
-                self.rightColumn = self.rightDoor.startColumn
-                mover.currentRoom = self.rightDoor
-                mover.current_row = self.rightRow
-                mover.current_column = self.rightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            if mover.current_row == 0 and mover.current_column == 2:
+                if self.upEntrance:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    mover.currentRoom = self.upDoor
+                    mover.current_row = self.upRow
+                    mover.current_column = self.upColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    self.upDoor = down_facing_doors(self, 1, 2)
+                    self.upEntrance = True
+                    self.upRow = self.upDoor.startRow
+                    self.upColumn = self.upDoor.startColumn
+                    mover.currentRoom = self.upDoor
+                    mover.current_row = self.upRow
+                    mover.current_column = self.upColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 8 and mover.current_column == 2:
+                if self.bottomEntrance:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    mover.currentRoom = self.bottomDoor
+                    mover.current_row = self.bottomRow
+                    mover.current_column = self.bottomColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    self.bottomDoor = up_facing_doors(self, 7, 2)
+                    self.bottomEntrance = True
+                    self.bottomRow = self.bottomDoor.startRow
+                    self.bottomColumn = self.bottomDoor.startColumn
+                    mover.currentRoom = self.bottomDoor
+                    mover.current_row = self.bottomRow
+                    mover.current_column = self.bottomColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 4 and mover.current_column == 1:
+                if self.leftEntrance:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    mover.currentRoom = self.leftDoor
+                    mover.current_row = self.leftRow
+                    mover.current_column = self.leftColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    self.leftDoor = right_facing_doors(self, 4, 2)
+                    self.leftEntrance = True
+                    self.leftRow = self.leftDoor.startRow
+                    self.leftColumn = self.leftDoor.startColumn
+                    mover.currentRoom = self.leftDoor
+                    mover.current_row = self.leftRow
+                    mover.current_column = self.leftColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 4 and mover.current_column == 3:
+                if self.rightEntrance:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    mover.currentRoom = self.rightDoor
+                    mover.current_row = self.rightRow
+                    mover.current_column = self.rightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    self.rightDoor = left_facing_doors(self, 4, 2)
+                    self.rightEntrance = True
+                    self.rightRow = self.rightDoor.startRow
+                    self.rightColumn = self.rightDoor.startColumn
+                    mover.currentRoom = self.rightDoor
+                    mover.current_row = self.rightRow
+                    mover.current_column = self.rightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class HorizontalCorridor:
@@ -1836,74 +2120,80 @@ class HorizontalCorridor:
             activeCharacters.append(choose_enemies(self, 3, 6))
 
     def leave(self, mover, symbol):
-        if mover.current_row == 1 and mover.current_column == 4:
-            if self.upEntrance:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                mover.currentRoom = self.upDoor
-                mover.current_row = self.upRow
-                mover.current_column = self.upColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row + 1][mover.current_column] = " "
-                self.upDoor = down_facing_doors(self, 2, 4)
-                self.upEntrance = True
-                self.upRow = self.upDoor.startRow
-                self.upColumn = self.upDoor.startColumn
-                mover.currentRoom = self.upDoor
-                mover.current_row = self.upRow
-                mover.current_column = self.upColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 3 and mover.current_column == 4:
-            if self.bottomEntrance:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                mover.currentRoom = self.bottomDoor
-                mover.current_row = self.bottomRow
-                mover.current_column = self.bottomColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row - 1][mover.current_column] = " "
-                self.bottomDoor = up_facing_doors(self, 2, 4)
-                self.bottomEntrance = True
-                self.bottomRow = self.bottomDoor.startRow
-                self.bottomColumn = self.bottomDoor.startColumn
-                mover.currentRoom = self.bottomDoor
-                mover.current_row = self.bottomRow
-                mover.current_column = self.bottomColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 2 and mover.current_column == 0:
-            if self.leftEntrance:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                mover.currentRoom = self.leftDoor
-                mover.current_row = self.leftRow
-                mover.current_column = self.leftColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row][mover.current_column + 1] = " "
-                self.leftDoor = right_facing_doors(self, 2, 1)
-                self.leftEntrance = True
-                self.leftRow = self.leftDoor.startRow
-                self.leftColumn = self.leftDoor.startColumn
-                mover.currentRoom = self.leftDoor
-                mover.current_row = self.leftRow
-                mover.current_column = self.leftColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-        elif mover.current_row == 2 and mover.current_column == 8:
-            if self.rightEntrance:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                mover.currentRoom = self.rightDoor
-                mover.current_row = self.rightRow
-                mover.current_column = self.rightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
-            else:
-                self.room[mover.current_row][mover.current_column - 1] = " "
-                self.rightDoor = left_facing_doors(self, 2, 7)
-                self.rightEntrance = True
-                self.rightRow = self.rightDoor.startRow
-                self.rightColumn = self.rightDoor.startColumn
-                mover.currentRoom = self.rightDoor
-                mover.current_row = self.rightRow
-                mover.current_column = self.rightColumn
-                mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            if mover.current_row == 1 and mover.current_column == 4:
+                if self.upEntrance:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    mover.currentRoom = self.upDoor
+                    mover.current_row = self.upRow
+                    mover.current_column = self.upColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row + 1][mover.current_column] = " "
+                    self.upDoor = down_facing_doors(self, 2, 4)
+                    self.upEntrance = True
+                    self.upRow = self.upDoor.startRow
+                    self.upColumn = self.upDoor.startColumn
+                    mover.currentRoom = self.upDoor
+                    mover.current_row = self.upRow
+                    mover.current_column = self.upColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 3 and mover.current_column == 4:
+                if self.bottomEntrance:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    mover.currentRoom = self.bottomDoor
+                    mover.current_row = self.bottomRow
+                    mover.current_column = self.bottomColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row - 1][mover.current_column] = " "
+                    self.bottomDoor = up_facing_doors(self, 2, 4)
+                    self.bottomEntrance = True
+                    self.bottomRow = self.bottomDoor.startRow
+                    self.bottomColumn = self.bottomDoor.startColumn
+                    mover.currentRoom = self.bottomDoor
+                    mover.current_row = self.bottomRow
+                    mover.current_column = self.bottomColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 2 and mover.current_column == 0:
+                if self.leftEntrance:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    mover.currentRoom = self.leftDoor
+                    mover.current_row = self.leftRow
+                    mover.current_column = self.leftColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column + 1] = " "
+                    self.leftDoor = right_facing_doors(self, 2, 1)
+                    self.leftEntrance = True
+                    self.leftRow = self.leftDoor.startRow
+                    self.leftColumn = self.leftDoor.startColumn
+                    mover.currentRoom = self.leftDoor
+                    mover.current_row = self.leftRow
+                    mover.current_column = self.leftColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+            elif mover.current_row == 2 and mover.current_column == 8:
+                if self.rightEntrance:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    mover.currentRoom = self.rightDoor
+                    mover.current_row = self.rightRow
+                    mover.current_column = self.rightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+                else:
+                    self.room[mover.current_row][mover.current_column - 1] = " "
+                    self.rightDoor = left_facing_doors(self, 2, 7)
+                    self.rightEntrance = True
+                    self.rightRow = self.rightDoor.startRow
+                    self.rightColumn = self.rightDoor.startColumn
+                    mover.currentRoom = self.rightDoor
+                    mover.current_row = self.rightRow
+                    mover.current_column = self.rightColumn
+                    mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class GoblinTrap:
@@ -1924,11 +2214,17 @@ class GoblinTrap:
         activeCharacters.append(GoblinWarrior(self, 3, 1))
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row + 1][mover.current_column] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row + 1][mover.current_column] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class TopSmallSpiral:
@@ -1953,6 +2249,7 @@ class TopSmallSpiral:
             self.tables -= self.chests
         elif self.tables + self.chests < 4:
             self.room[4][3] = 's'
+            self.shop = Shop()
         if self.tables + self.chests - 1 + self.enemies > 11:
             self.enemies -= self.tables + self.chests - 1
         while self.chests >= 1:
@@ -2024,11 +2321,17 @@ class TopSmallSpiral:
             self.enemies -= 1
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row + 1][mover.current_column] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row + 1][mover.current_column] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class BottomSmallSpiral:
@@ -2053,6 +2356,7 @@ class BottomSmallSpiral:
             self.tables -= self.chests
         elif self.tables + self.chests < 4:
             self.room[3][3] = 's'
+            self.shop = Shop()
         if self.tables + self.chests - 1 + self.enemies > 11:
             self.enemies -= self.tables + self.chests - 1
         while self.chests >= 1:
@@ -2124,11 +2428,17 @@ class BottomSmallSpiral:
             self.enemies -= 1
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row - 1][mover.current_column] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row - 1][mover.current_column] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class LeftSmallSpiral:
@@ -2152,6 +2462,7 @@ class LeftSmallSpiral:
             self.tables -= self.chests
         elif self.tables + self.chests < 4:
             self.room[3][4] = 's'
+            self.shop = Shop()
         if self.tables + self.chests - 1 + self.enemies > 11:
             self.enemies -= self.tables + self.chests - 1
         while self.chests >= 1:
@@ -2223,11 +2534,17 @@ class LeftSmallSpiral:
             self.enemies -= 1
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row][mover.current_column + 1] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row][mover.current_column + 1] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
 
 
 class RightSmallSpiral:
@@ -2251,13 +2568,14 @@ class RightSmallSpiral:
             self.tables -= self.chests
         elif self.tables + self.chests < 4:
             self.room[3][3] = 's'
+            self.shop = Shop()
         if self.tables + self.chests - 1 + self.enemies > 11:
             self.enemies -= self.tables + self.chests - 1
         while self.chests >= 1:
             if self.room[3][3] == ' ':
                 self.room[3][3] = 'C'
-            elif self.room[4][1] == ' ':
-                self.room[4][1] = 'C'
+            elif self.room[1][4] == ' ':
+                self.room[1][4] = 'C'
             elif self.room[1][1] == ' ':
                 self.room[1][1] = 'C'
             elif self.room[5][1] == ' ':
@@ -2266,8 +2584,8 @@ class RightSmallSpiral:
         while self.tables >= 1:
             if self.room[3][3] == ' ':
                 self.room[3][3] = 'T'
-            elif self.room[4][1] == ' ':
-                self.room[4][1] = 'T'
+            elif self.room[1][4] == ' ':
+                self.room[1][4] = 'T'
             elif self.room[1][1] == ' ':
                 self.room[1][1] = 'T'
             elif self.room[5][1] == ' ':
@@ -2322,8 +2640,14 @@ class RightSmallSpiral:
             self.enemies -= 1
 
     def leave(self, mover, symbol):
-        self.room[mover.current_row][mover.current_column - 1] = " "
-        mover.currentRoom = self.door
-        mover.current_row = self.connectedRow
-        mover.current_column = self.connectedColumn
-        mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        try:
+            self.room[mover.current_row][mover.current_column - 1] = " "
+            mover.currentRoom = self.door
+            mover.current_row = self.connectedRow
+            mover.current_column = self.connectedColumn
+            mover.currentRoom.room[mover.current_row][mover.current_column] = symbol
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred when leaving.")
+            traceback.print_exc(None, f)
+            f.close()
