@@ -57,6 +57,7 @@ class Fighter:
         self.maxHP = 20
         self.strength = 1
         self.dexterity = 1
+        self.fortitude = 0
         self.magic = 0
         self.speed = 0
         # Equipable items
@@ -72,8 +73,6 @@ class Fighter:
         self.minorPotions = 0
         self.moderatePotions = 0
         self.majorPotions = 0
-        # Items looted from defeated enemies that can't be equipped.
-        self.loot = []
         # Location information
         self.current_row = 3
         self.current_column = 1
@@ -88,6 +87,7 @@ class Fighter:
         print("Gold: " + str(self.gold))
         print("Strength: " + str(self.strength))
         print("Dexterity: " + str(self.dexterity))
+        print("Fortitude: " + str(self.fortitude))
         print("Magic: " + str(self.magic))
         print("Weapon: " + self.equippedWeapon.print_details())
         print("Armor: " + self.equippedArmor.print_details())
@@ -232,7 +232,7 @@ class Fighter:
             # If the player chose to attack an enemy
             if attacked:
                 print("You throw a knife at " + target.name + ".")
-                SupportInfo.Weapon("Knife", self.dexterity + 1, 1, 0, 1).attack(self.dexterity, self.strength, target)
+                SupportInfo.ThrowingKnife().attack(self.dexterity, self.strength, target)
                 # If the target is killed
                 if target.currentHP <= 0:
                     print(target.name + " is slain!")
@@ -248,16 +248,16 @@ class Fighter:
                                 found = True
                         if not found:
                             self.storedWeapons.append([target.equippedWeapon, 1])
-                    # If target's equipped weapon can not be equipped by the player, put the weapon in their loot
-                    else:
-                        print(target.name + " dropped " + target.equippedWeapon.name + "! Added to loot.")
+                    # If target's equipped armor can be equipped by the player, put the armor in their stored armor
+                    if target.equippedArmor.equipable:
+                        print(target.name + " dropped " + target.equippedArmor.name + "! It is put in storage.")
                         found = False
-                        for weapon in self.loot:
-                            if target.equippedWeapon.name == weapon[0].name:
-                                weapon[1] += 1
+                        for armor in self.storedArmor:
+                            if target.equippedArmor.name == armor.name:
+                                armor.quantity += 1
                                 found = True
                         if not found:
-                            self.loot.append([target.equippedWeapon, 1])
+                            self.storedArmor.append(target.equippedArmor)
                     activeCharacters.remove(target)
                 # Check if the character has enough experience to level up
                 if self.xp >= SupportInfo.characterLevel * 10:
@@ -394,16 +394,16 @@ class Fighter:
                                 found = True
                         if not found:
                             self.storedWeapons.append([target.equippedWeapon, 1])
-                    # If target's equipped weapon can not be equipped by the player, put the weapon in their loot
-                    else:
-                        print(target.name + " dropped " + target.equippedWeapon.name + "! Added to loot.")
+                    # If target's equipped armor can be equipped by the player, put the armor in their stored armor
+                    if target.equippedArmor.equipable:
+                        print(target.name + " dropped " + target.equippedArmor.name + "! It is put in storage.")
                         found = False
-                        for weapon in self.loot:
-                            if target.equippedWeapon.name == weapon[0].name:
-                                weapon[1] += 1
+                        for armor in self.storedArmor:
+                            if target.equippedArmor.name == armor.name:
+                                armor.quantity += 1
                                 found = True
                         if not found:
-                            self.loot.append([target.equippedWeapon, 1])
+                            self.storedArmor.append(target.equippedArmor)
                     activeCharacters.remove(target)
                 # Check if the character has enough experience to level up
                 if self.xp >= SupportInfo.characterLevel * 10:
@@ -535,16 +535,16 @@ class Fighter:
                                 found = True
                         if not found:
                             self.storedWeapons.append([target.equippedWeapon, 1])
-                    # If target's equipped weapon can not be equipped by the player, put the weapon in their loot
-                    else:
-                        print(target.name + " dropped " + target.equippedWeapon.name + "! Added to loot.")
+                    # If target's equipped armor can be equipped by the player, put the armor in their stored armor
+                    if target.equippedArmor.equipable:
+                        print(target.name + " dropped " + target.equippedArmor.name + "! It is put in storage.")
                         found = False
-                        for weapon in self.loot:
-                            if target.equippedWeapon.name == weapon[0].name:
-                                weapon[1] += 1
+                        for armor in self.storedArmor:
+                            if target.equippedArmor.name == armor.name:
+                                armor.quantity += 1
                                 found = True
                         if not found:
-                            self.loot.append([target.equippedWeapon, 1])
+                            self.storedArmor.append(target.equippedArmor)
                     activeCharacters.remove(target)
                 # Check if the character has enough experience to level up
                 if self.xp >= SupportInfo.characterLevel * 10:
@@ -563,7 +563,7 @@ class Fighter:
         try:
             print("Level up!")
             SupportInfo.characterLevel += 1  # This is stored in SupportInfo so it can be used in other files
-            self.maxHP += 5
+            self.maxHP += 5 + self.fortitude
             self.currentHP = self.maxHP
             print("Current Strength: " + str(self.strength))
             print("Current Dexterity: " + str(self.dexterity))
@@ -963,11 +963,11 @@ def examine():
                         if answer.event_type == keyboard.KEY_UP and answer.name == "e":
                             # Lower case c represent opened treasure chests.
                             character.currentRoom.room[character.current_row - 1][character.current_column] = 'c'
-                            # Contents of chest are randomly chosen from a list
+                            # Contents of chest are randomly chosen from a list in SupportInfo
                             table = random.randrange(0, len(SupportInfo.chestOptions), 1)
                             # The chest contains a weapon
                             if SupportInfo.chestOptions[table] == "Weapon":
-                                # The weapon is randomly chosen from a list.
+                                # The weapon is randomly chosen from a list in SupportInfo
                                 weapon = SupportInfo.weaponOptions[random.randrange(0, len(SupportInfo.weaponOptions), 1)]
                                 if weapon.name == "Shortbow" or weapon.name == "Longbow":
                                     print("You find a " + weapon.name + " and 10 arrows. Do you want to equip "
@@ -994,7 +994,7 @@ def examine():
                                         print(weapon.name + " put away.")
                                         found = False
                                         for stored_weapon in character.storedWeapons:
-                                            if stored_weapon[0].name == character.equippedWeapon.name:
+                                            if stored_weapon[0].name == weapon.name:
                                                 stored_weapon[1] += 1
                                                 found = True
                                                 break
@@ -1003,20 +1003,32 @@ def examine():
                                         break
                             # The chest contains a set of armor
                             elif SupportInfo.chestOptions[table] == "Armor":
+                                # The armor is randomly chosen from a list in SupportInfo
                                 armor = SupportInfo.armorOptions[random.randrange(0, len(SupportInfo.armorOptions), 1)]
-                                print("You find a suit of " + armor.name + " armor. "
-                                                                           "Do you want to equip it? (e-equip, d-don't)")
+                                print("You find a suit of " + armor.name + " armor. Do you want to equip it? (e-equip, d-don't)")
                                 while True:
                                     equip = keyboard.read_event(suppress=True)
                                     if equip.event_type == keyboard.KEY_UP and equip.name == "e":
                                         if character.equippedArmor.name != "None":
-                                            character.storedArmor.append(character.equippedArmor)
+                                            found = False
+                                            for stored_armor in character.storedArmor:
+                                                if stored_armor.name == armor.name:
+                                                    stored_armor.quantity += 1
+                                                    found = True
+                                            if not found:
+                                                character.storedArmor.append(character.equippedArmor)
                                         character.equippedArmor = armor
                                         print(armor.name + " armor equipped.")
                                         break
                                     elif equip.event_type == keyboard.KEY_UP:
                                         print(armor.name + " put away.")
-                                        character.storedArmor.append(armor)
+                                        found = False
+                                        for stored_armor in character.storedArmor:
+                                            if stored_armor.name == armor.name:
+                                                stored_armor.quantity += 1
+                                                found = True
+                                        if not found:
+                                            character.storedArmor.append(armor)
                                         break
                             break
                         elif answer.event_type == keyboard.KEY_UP:
@@ -1107,7 +1119,7 @@ def examine():
                                         print(weapon.name + " put away.")
                                         found = False
                                         for stored_weapon in character.storedWeapons:
-                                            if stored_weapon[0].name == character.equippedWeapon.name:
+                                            if stored_weapon[0].name == weapon.name:
                                                 stored_weapon[1] += 1
                                                 found = True
                                                 break
@@ -1115,20 +1127,32 @@ def examine():
                                             character.storedWeapons.append([weapon, 1])
                                         break
                             elif SupportInfo.chestOptions[table] == "Armor":
+                                # The armor is randomly chosen from a list in SupportInfo
                                 armor = SupportInfo.armorOptions[random.randrange(0, len(SupportInfo.armorOptions), 1)]
-                                print("You find a suit of " + armor.name + " armor. "
-                                                                           "Do you want to equip it? (e-equip, d-don't)")
+                                print("You find a suit of " + armor.name + " armor. Do you want to equip it? (e-equip, d-don't)")
                                 while True:
                                     equip = keyboard.read_event(suppress=True)
                                     if equip.event_type == keyboard.KEY_UP and equip.name == "e":
                                         if character.equippedArmor.name != "None":
-                                            character.storedArmor.append(character.equippedArmor)
+                                            found = False
+                                            for stored_armor in character.storedArmor:
+                                                if stored_armor.name == armor.name:
+                                                    stored_armor.quantity += 1
+                                                    found = True
+                                            if not found:
+                                                character.storedArmor.append(character.equippedArmor)
                                         character.equippedArmor = armor
                                         print(armor.name + " armor equipped.")
                                         break
                                     elif equip.event_type == keyboard.KEY_UP:
                                         print(armor.name + " put away.")
-                                        character.storedArmor.append(armor)
+                                        found = False
+                                        for stored_armor in character.storedArmor:
+                                            if stored_armor.name == armor.name:
+                                                stored_armor.quantity += 1
+                                                found = True
+                                        if not found:
+                                            character.storedArmor.append(armor)
                                         break
                             break
                         elif answer.event_type == keyboard.KEY_UP:
@@ -1219,7 +1243,7 @@ def examine():
                                         print(weapon.name + " put away.")
                                         found = False
                                         for stored_weapon in character.storedWeapons:
-                                            if stored_weapon[0].name == character.equippedWeapon.name:
+                                            if stored_weapon[0].name == weapon.name:
                                                 stored_weapon[1] += 1
                                                 found = True
                                                 break
@@ -1227,20 +1251,32 @@ def examine():
                                             character.storedWeapons.append([weapon, 1])
                                         break
                             elif SupportInfo.chestOptions[table] == "Armor":
+                                # The armor is randomly chosen from a list in SupportInfo
                                 armor = SupportInfo.armorOptions[random.randrange(0, len(SupportInfo.armorOptions), 1)]
-                                print("You find a suit of " + armor.name + " armor. "
-                                                                           "Do you want to equip it? (e-equip, d-don't)")
+                                print("You find a suit of " + armor.name + " armor. Do you want to equip it? (e-equip, d-don't)")
                                 while True:
                                     equip = keyboard.read_event(suppress=True)
                                     if equip.event_type == keyboard.KEY_UP and equip.name == "e":
                                         if character.equippedArmor.name != "None":
-                                            character.storedArmor.append(character.equippedArmor)
+                                            found = False
+                                            for stored_armor in character.storedArmor:
+                                                if stored_armor.name == armor.name:
+                                                    stored_armor.quantity += 1
+                                                    found = True
+                                            if not found:
+                                                character.storedArmor.append(character.equippedArmor)
                                         character.equippedArmor = armor
                                         print(armor.name + " armor equipped.")
                                         break
                                     elif equip.event_type == keyboard.KEY_UP:
                                         print(armor.name + " put away.")
-                                        character.storedArmor.append(armor)
+                                        found = False
+                                        for stored_armor in character.storedArmor:
+                                            if stored_armor.name == armor.name:
+                                                stored_armor.quantity += 1
+                                                found = True
+                                        if not found:
+                                            character.storedArmor.append(armor)
                                         break
                             break
                         elif answer.event_type == keyboard.KEY_UP:
@@ -1331,7 +1367,7 @@ def examine():
                                         print(weapon.name + " put away.")
                                         found = False
                                         for stored_weapon in character.storedWeapons:
-                                            if stored_weapon[0].name == character.equippedWeapon.name:
+                                            if stored_weapon[0].name == weapon.name:
                                                 stored_weapon[1] += 1
                                                 found = True
                                                 break
@@ -1339,20 +1375,32 @@ def examine():
                                             character.storedWeapons.append([weapon, 1])
                                         break
                             elif SupportInfo.chestOptions[table] == "Armor":
+                                # The armor is randomly chosen from a list in SupportInfo
                                 armor = SupportInfo.armorOptions[random.randrange(0, len(SupportInfo.armorOptions), 1)]
-                                print("You find a suit of " + armor.name + " armor. "
-                                                                           "Do you want to equip it? (e-equip, d-don't)")
+                                print("You find a suit of " + armor.name + " armor. Do you want to equip it? (e-equip, d-don't)")
                                 while True:
                                     equip = keyboard.read_event(suppress=True)
                                     if equip.event_type == keyboard.KEY_UP and equip.name == "e":
                                         if character.equippedArmor.name != "None":
-                                            character.storedArmor.append(character.equippedArmor)
+                                            found = False
+                                            for stored_armor in character.storedArmor:
+                                                if stored_armor.name == armor.name:
+                                                    stored_armor.quantity += 1
+                                                    found = True
+                                            if not found:
+                                                character.storedArmor.append(character.equippedArmor)
                                         character.equippedArmor = armor
                                         print(armor.name + " armor equipped.")
                                         break
                                     elif equip.event_type == keyboard.KEY_UP:
                                         print(armor.name + " put away.")
-                                        character.storedArmor.append(armor)
+                                        found = False
+                                        for stored_armor in character.storedArmor:
+                                            if stored_armor.name == armor.name:
+                                                stored_armor.quantity += 1
+                                                found = True
+                                        if not found:
+                                            character.storedArmor.append(armor)
                                         break
                             break
                         elif answer.event_type == keyboard.KEY_UP:
@@ -1443,7 +1491,7 @@ def examine():
                                         print(weapon.name + " put away.")
                                         found = False
                                         for stored_weapon in character.storedWeapons:
-                                            if stored_weapon[0].name == character.equippedWeapon.name:
+                                            if stored_weapon[0].name == weapon.name:
                                                 stored_weapon[1] += 1
                                                 found = True
                                                 break
@@ -1451,20 +1499,32 @@ def examine():
                                             character.storedWeapons.append([weapon, 1])
                                         break
                             elif SupportInfo.chestOptions[table] == "Armor":
+                                # The armor is randomly chosen from a list in SupportInfo
                                 armor = SupportInfo.armorOptions[random.randrange(0, len(SupportInfo.armorOptions), 1)]
-                                print("You find a suit of " + armor.name + " armor. "
-                                                                           "Do you want to equip it? (e-equip, d-don't)")
+                                print("You find a suit of " + armor.name + " armor. Do you want to equip it? (e-equip, d-don't)")
                                 while True:
                                     equip = keyboard.read_event(suppress=True)
                                     if equip.event_type == keyboard.KEY_UP and equip.name == "e":
                                         if character.equippedArmor.name != "None":
-                                            character.storedArmor.append(character.equippedArmor)
+                                            found = False
+                                            for stored_armor in character.storedArmor:
+                                                if stored_armor.name == armor.name:
+                                                    stored_armor.quantity += 1
+                                                    found = True
+                                            if not found:
+                                                character.storedArmor.append(character.equippedArmor)
                                         character.equippedArmor = armor
                                         print(armor.name + " armor equipped.")
                                         break
                                     elif equip.event_type == keyboard.KEY_UP:
                                         print(armor.name + " put away.")
-                                        character.storedArmor.append(armor)
+                                        found = False
+                                        for stored_armor in character.storedArmor:
+                                            if stored_armor.name == armor.name:
+                                                stored_armor.quantity += 1
+                                                found = True
+                                        if not found:
+                                            character.storedArmor.append(armor)
                                         break
                             break
                         elif answer.event_type == keyboard.KEY_UP:
@@ -1530,19 +1590,29 @@ def change_armor():
             print("Equipped Armor: " + character.equippedArmor.print_details())
             print()
             print("Stored Armor:")
-            for weapon in character.storedArmor:
-                print(weapon.print_details())
+            for armor in character.storedArmor:
+                print(str(armor.quantity) + " " + armor.print_details())
                 print()
             desired = input("Which armor do you want to equip? ")
+            found = False
             for armor in character.storedArmor:
                 if armor.name == desired:
                     if character.equippedArmor.name != "None":
-                        character.storedArmor.append(character.equippedArmor)
+                        stored = False
+                        for stored_armor in character.storedArmor:
+                            if stored_armor.name == character.equippedArmor.name:
+                                stored_armor.quantity += 1
+                                stored = True
+                        if not stored:
+                            character.storedArmor.append(character.equippedArmor)
                     character.equippedArmor = armor
-                    character.storedArmor.remove(armor)
+                    armor.quantity -= 1
+                    if armor.quantity == 0:
+                        character.storedArmor.remove(armor)
                     print(armor.name + " equipped.")
-                else:
-                    print("You don't have that armor.")
+                    found = True
+            if not found:
+                print("You don't have that armor.")
         else:
             print("You don't have any stored armor to equip.")
     except Exception as ArmorArgument:
@@ -1569,13 +1639,14 @@ print("Wait (w): Pass your action.")
 print("Character info (c): See your character's current status.")
 print("Change Weapon (s): Switch your equipped weapon with one you have stored.")
 print("Change Armor (d): Switch your equipped armor with one you have stored.")
+print("Use item (z): Use a consumable item")
 print("Menu (f): See this menu.")
 print("Quit (q): Quit the game.")
-print("Use item (z): Use a consumable item")
 try:
     while not quitGame:
         turn = determine_turn(activeCharacters)
         if turn == character:
+            print("HP: " + str(character.currentHP) + "/" + str(character.maxHP))
             for row in character.currentRoom.room:
                 print(row)
             acted = False
@@ -1622,6 +1693,7 @@ try:
                     print("Character info (c): See your character's current status.")
                     print("Change Weapon (s): Switch your equipped weapon with one you have stored.")
                     print("Change Armor (d): Switch your equipped armor with one you have stored.")
+                    print("Use item (z): Use a consumable item")
                     print("Menu (f): See this menu.")
                     print("Quit (q): quit the game.")
                 elif event.event_type == keyboard.KEY_UP and event.name == "q":

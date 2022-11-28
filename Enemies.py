@@ -100,9 +100,9 @@ class GoblinScout:
         self.maxHP = 10
         self.xp = 2
         self.strength = 1
-        self.dexterity = 3
-        self.equippedWeapon = SupportInfo.Shortsword()
-        self.equippedArmor = SupportInfo.Armor("Leather", 1, 1)
+        self.dexterity = 1
+        self.equippedWeapon = SupportInfo.Dagger()
+        self.equippedArmor = SupportInfo.Leather()
         self.speed = 0
         self.current_row = row
         self.current_column = column
@@ -192,10 +192,10 @@ class GoblinWarrior:
         self.currentHP = 15
         self.maxHP = 15
         self.xp = 2
-        self.strength = 3
-        self.dexterity = 1
-        self.equippedWeapon = SupportInfo.Longsword()
-        self.equippedArmor = SupportInfo.Armor("Mail", 3, 1.5)
+        self.strength = 2
+        self.dexterity = 0
+        self.equippedWeapon = SupportInfo.Shortsword()
+        self.equippedArmor = SupportInfo.StuddedLeather()
         self.speed = 0
         self.current_row = row
         self.current_column = column
@@ -285,10 +285,10 @@ class GoblinArcher:
         self.currentHP = 10
         self.maxHP = 10
         self.xp = 2
-        self.strength = 1
+        self.strength = 0
         self.dexterity = 2
         self.equippedWeapon = SupportInfo.Shortbow()
-        self.equippedArmor = SupportInfo.Armor("Leather", 1, 0.5)
+        self.equippedArmor = SupportInfo.Leather()
         self.speed = 0
         self.current_row = row
         self.current_column = column
@@ -386,7 +386,7 @@ def choose_enemies(room, row, column):
             return GoblinWarrior(room, row, column)
         else:
             return GoblinArcher(room, row, column)
-    except Exception as Argument:
+    except:
         f = open("error_report.txt", "a")
         print("An error occurred when generating enemies.")
         traceback.print_exc(None, f)

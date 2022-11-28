@@ -2,39 +2,72 @@ import traceback
 import random
 
 
-class Weapon:
-    def __init__(self, name, weapon_range, damage, weight, hands, gold=0):
-        self.name = name
-        self.range = weapon_range
-        self.damage = damage
-        self.weight = weight
-        self.hands = hands
-        self.gold = gold
+class ThrowingKnife:
+    def __init__(self):
+        self.name = "throwing knife"
+        self.range = 1
+        self.damageType = "Piercing"
+        self.weight = 0
+        self.hands = 0
+        self.gold = 2
+        self.traits = []
         self.isRanged = False
 
     def print_details(self):
         wstring = self.name
-        wstring += "\nRange: " + str(self.range)
-        wstring += "\nDamage: 1 - " + str(self.damage)
-        wstring += "\nWeight: " + str(self.weight)
-        wstring += "\nHands required: " + str(self.hands)
+        wstring += "\nRange: 1"
+        wstring += "\nDamage: 1 " + self.damageType
+        wstring += "\nWeight: 0"
+        wstring += "\nHands required: 0"
+        wstring += "\nGold value: 2"
         return wstring
 
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
             if random.randrange(1, 20) + accuracy > armor:
-                if self.damage == 1:
-                    damage += 1
-                else:
-                    damage = random.randrange((1 + damage), (self.damage + damage + 1), 1)
-                target.currentHP -= damage
-                print(target.name + " takes " + str(damage) + " points of damage!")
+                damage += 1
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
         except:
             f = open("error_report.txt", "a")
-            print("An error occured.")
+            print("An error occurred.")
+            traceback.print_exc(None, f)
+            f.close()
+
+
+class Fist:
+    def __init__(self):
+        self.name = "Fist"
+        self.range = 1
+        self.damageType = "Bludgeoning"
+        self.hands = 1
+        self.weight = 0
+        self.gold = 0
+        self.traits = []
+        self.isRanged = False
+
+    def print_details(self):
+        wstring = self.name
+        wstring += "\nRange: 1"
+        wstring += "\nDamage: 1 " + self.damageType
+        wstring += "\nWeight: 1.2"
+        wstring += "\nHands required: 1"
+        wstring += "\nGold value: 7"
+        return wstring
+
+    def attack(self, accuracy, damage, target):
+        try:
+            armor = target.dexterity + target.equippedArmor.defense
+            if random.randrange(1, 20) + accuracy > armor:
+                damage += 1
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
+            else:
+                print("The attack misses!")
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred.")
             traceback.print_exc(None, f)
             f.close()
 
@@ -68,13 +101,12 @@ class Longsword:
             armor = target.dexterity + target.equippedArmor.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((2 + damage), (9 + damage), 1)
-                target.currentHP -= damage
-                print(target.name + " takes " + str(damage) + " points of damage!")
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
         except:
             f = open("error_report.txt", "a")
-            print("An error occured.")
+            print("An error occurred.")
             traceback.print_exc(None, f)
             f.close()
 
@@ -108,13 +140,12 @@ class Shortsword:
             armor = target.dexterity + target.equippedArmor.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((1 + damage), (7 + damage), 1)
-                target.currentHP -= damage
-                print(target.name + " takes " + str(damage) + " points of damage!")
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
         except:
             f = open("error_report.txt", "a")
-            print("An error occured.")
+            print("An error occurred.")
             traceback.print_exc(None, f)
             f.close()
 
@@ -145,13 +176,12 @@ class Axe:
             armor = target.dexterity + target.equippedArmor.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((4 + damage), (7 + damage), 1)
-                target.currentHP -= damage
-                print(target.name + " takes " + str(damage) + " points of damage!")
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
         except:
             f = open("error_report.txt", "a")
-            print("An error occured.")
+            print("An error occurred.")
             traceback.print_exc(None, f)
             f.close()
 
@@ -182,13 +212,12 @@ class Club:
             armor = target.dexterity + target.equippedArmor.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((1 + damage), (7 + damage), 1)
-                target.currentHP -= damage
-                print(target.name + " takes " + str(damage) + " points of damage!")
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
         except:
             f = open("error_report.txt", "a")
-            print("An error occured.")
+            print("An error occurred.")
             traceback.print_exc(None, f)
             f.close()
 
@@ -219,13 +248,12 @@ class Warhammer:
             armor = target.dexterity + target.equippedArmor.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((4 + damage), (9 + damage), 1)
-                target.currentHP -= damage
-                print(target.name + " takes " + str(damage) + " points of damage!")
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
         except:
             f = open("error_report.txt", "a")
-            print("An error occured.")
+            print("An error occurred.")
             traceback.print_exc(None, f)
             f.close()
 
@@ -256,13 +284,12 @@ class Dagger:
             armor = target.dexterity + target.equippedArmor.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((1 + damage), (5 + damage), 1)
-                target.currentHP -= damage
-                print(target.name + " takes " + str(damage) + " points of damage!")
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
         except:
             f = open("error_report.txt", "a")
-            print("An error occured.")
+            print("An error occurred.")
             traceback.print_exc(None, f)
             f.close()
 
@@ -293,13 +320,12 @@ class Spear:
             armor = target.dexterity + target.equippedArmor.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((1 + damage), (7 + damage), 1)
-                target.currentHP -= damage
-                print(target.name + " takes " + str(damage) + " points of damage!")
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
-        except Exception as Argument:
+        except:
             f = open("error_report.txt", "a")
-            print("An error occured.")
+            print("An error occurred.")
             traceback.print_exc(None, f)
             f.close()
 
@@ -331,8 +357,7 @@ class Shortbow:
             if random.randrange(1, 20) + accuracy > armor:
                 damage = int(damage / 2)
                 damage = random.randrange((1 + damage), (7 + damage), 1)
-                target.currentHP -= damage
-                print(target.name + " takes " + str(damage) + " points of damage!")
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
         except:
@@ -369,8 +394,7 @@ class Longbow:
             if random.randrange(1, 20) + accuracy > armor:
                 damage = int(damage / 2)
                 damage = random.randrange((2 + damage), (7 + damage), 1)
-                target.currentHP -= damage
-                print(target.name + " takes " + str(damage) + " points of damage!")
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
         except:
@@ -386,12 +410,262 @@ class Armor:
         self.defense = defense
         self.weight = weight
         self.gold = gold
+        self.equipable = False
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
         wstring += "\ndefense: " + str(self.defense)
         wstring += "\nWeight: " + str(self.weight)
         return wstring
+
+    def take_damage(self, damage, d_type, target, traits):
+        target.currentHP -= damage
+        print(target.name + " takes " + str(damage) + " points of damage!")
+
+
+class Leather:
+    def __init__(self):
+        self.name = "Leather"
+        self.defense = 1
+        self.weight = 0.5
+        self.gold = 2
+        self.equipable = True
+        self.quantity = 1
+
+    def print_details(self):
+        wstring = self.name
+        wstring += "\ndefense: " + str(self.defense)
+        wstring += "\nWeight: " + str(self.weight)
+        wstring += "\nGold: " + str(self.gold)
+        return wstring
+
+    def take_damage(self, damage, d_type, target, traits):
+        target.currentHP -= damage
+        print(target.name + " takes " + str(damage) + " points of damage!")
+
+
+class Hide:
+    def __init__(self):
+        self.name = "Hide"
+        self.defense = 2
+        self.weight = 1
+        self.gold = 4
+        self.equipable = True
+        self.quantity = 1
+
+    def print_details(self):
+        wstring = self.name
+        wstring += "\ndefense: " + str(self.defense)
+        wstring += "\nWeight: " + str(self.weight)
+        wstring += "\nGold: " + str(self.gold)
+        return wstring
+
+    def take_damage(self, damage, d_type, target, traits):
+        target.currentHP -= damage
+        print(target.name + " takes " + str(damage) + " points of damage!")
+
+
+class StuddedLeather:
+    def __init__(self):
+        self.name = "Studded Leather"
+        self.defense = 3
+        self.weight = 1.5
+        self.gold = 6
+        self.equipable = True
+        self.quantity = 1
+
+    def print_details(self):
+        wstring = self.name
+        wstring += "\ndefense: " + str(self.defense)
+        wstring += "\nWeight: " + str(self.weight)
+        wstring += "\nGold: " + str(self.gold)
+        return wstring
+
+    def take_damage(self, damage, d_type, target, traits):
+        target.currentHP -= damage
+        print(target.name + " takes " + str(damage) + " points of damage!")
+
+
+class Breastplate:
+    def __init__(self):
+        self.name = "Studded Leather"
+        self.defense = 4
+        self.weight = 2
+        self.gold = 8
+        self.equipable = True
+        self.quantity = 1
+
+    def print_details(self):
+        wstring = self.name
+        wstring += "\ndefense: " + str(self.defense)
+        wstring += "\nWeight: " + str(self.weight)
+        wstring += "\nGold: " + str(self.gold)
+        return wstring
+
+    def take_damage(self, damage, d_type, target, traits):
+        target.currentHP -= damage
+        print(target.name + " takes " + str(damage) + " points of damage!")
+
+
+class Padded:
+    def __init__(self):
+        self.name = "Padded"
+        self.defense = 1
+        self.weight = 1
+        self.gold = 5
+        self.equipable = True
+        self.quantity = 1
+
+    def print_details(self):
+        wstring = self.name
+        wstring += "\ndefense: " + str(self.defense)
+        wstring += "\nResists bludgeoning damage"
+        wstring += "\nWeight: " + str(self.weight)
+        wstring += "\nGold: " + str(self.gold)
+        return wstring
+
+    def take_damage(self, damage, d_type, target, traits):
+        deflected = False
+        if d_type == "Bludgeoning":
+            versatile = False
+            for trait in traits:
+                if trait == "Versatile-Piercing" or trait == "Versatile-Slashing":
+                    versatile = True
+                    break
+            if not versatile:
+                damage -= 2
+                deflected = True
+        if deflected:
+            if damage <= 0:
+                print("The " + self.name + " deflects the blow, preventing any damage.")
+            else:
+                target.currentHP -= damage
+                print("The " + self.name + " deflects some of the blow, but " + target.name + " still takes " +
+                      str(damage) + " points of damage!")
+        else:
+            target.currentHP -= damage
+            print(target.name + " takes " + str(damage) + " points of damage!")
+
+
+class ChainShirt:
+    def __init__(self):
+        self.name = "Chain Shirt"
+        self.defense = 1
+        self.weight = 1
+        self.gold = 5
+        self.equipable = True
+        self.quantity = 1
+
+    def print_details(self):
+        wstring = self.name
+        wstring += "\ndefense: " + str(self.defense)
+        wstring += "\nResists slashing damage"
+        wstring += "\nWeight: " + str(self.weight)
+        wstring += "\nGold: " + str(self.gold)
+        return wstring
+
+    def take_damage(self, damage, d_type, target, traits):
+        deflected = False
+        if d_type == "Slashing":
+            versatile = False
+            for trait in traits:
+                if trait == "Versatile-Piercing" or trait == "Versatile-Bludgeoning":
+                    versatile = True
+                    break
+            if not versatile:
+                damage -= 2
+                deflected = True
+        if deflected:
+            if damage <= 0:
+                print("The " + self.name + " deflects the blow, preventing any damage.")
+            else:
+                target.currentHP -= damage
+                print("The " + self.name + " deflects some of the blow, but " + target.name + " still takes " +
+                      str(damage) + " points of damage!")
+        else:
+            target.currentHP -= damage
+            print(target.name + " takes " + str(damage) + " points of damage!")
+
+
+class Chainmail:
+    def __init__(self):
+        self.name = "Chainmail"
+        self.defense = 2
+        self.weight = 2
+        self.gold = 10
+        self.equipable = True
+        self.quantity = 1
+
+    def print_details(self):
+        wstring = self.name
+        wstring += "\ndefense: " + str(self.defense)
+        wstring += "\nResists slashing damage"
+        wstring += "\nWeight: " + str(self.weight)
+        wstring += "\nGold: " + str(self.gold)
+        return wstring
+
+    def take_damage(self, damage, d_type, target, traits):
+        deflected = False
+        if d_type == "Slashing":
+            versatile = False
+            for trait in traits:
+                if trait == "Versatile-Piercing" or trait == "Versatile-Bludgeoning":
+                    versatile = True
+                    break
+            if not versatile:
+                damage -= 4
+                deflected = True
+        if deflected:
+            if damage <= 0:
+                print("The " + self.name + " deflects the blow, preventing any damage.")
+            else:
+                target.currentHP -= damage
+                print("The " + self.name + " deflects some of the blow, but " + target.name + " still takes " +
+                      str(damage) + " points of damage!")
+        else:
+            target.currentHP -= damage
+            print(target.name + " takes " + str(damage) + " points of damage!")
+
+
+class ScaleMail:
+    def __init__(self):
+        self.name = "Scale Mail"
+        self.defense = 2
+        self.weight = 2
+        self.gold = 10
+        self.equipable = True
+        self.quantity = 1
+
+    def print_details(self):
+        wstring = self.name
+        wstring += "\ndefense: " + str(self.defense)
+        wstring += "\nResists piercing damage"
+        wstring += "\nWeight: " + str(self.weight)
+        wstring += "\nGold: " + str(self.gold)
+        return wstring
+
+    def take_damage(self, damage, d_type, target, traits):
+        deflected = False
+        if d_type == "Piercing":
+            versatile = False
+            for trait in traits:
+                if trait == "Versatile-Slashing" or trait == "Versatile-Bludgeoning":
+                    versatile = True
+                    break
+            if not versatile:
+                damage -= 4
+                deflected = True
+        if deflected:
+            if damage <= 0:
+                print("The " + self.name + " deflects the blow, preventing any damage.")
+            else:
+                target.currentHP -= damage
+                print("The " + self.name + " deflects some of the blow, but " + target.name + " still takes " +
+                      str(damage) + " points of damage!")
+        else:
+            target.currentHP -= damage
+            print(target.name + " takes " + str(damage) + " points of damage!")
 
 
 tableOptions = [["knives", 1],
@@ -411,6 +685,6 @@ chestOptions = ["Weapon", "Armor"]
 
 weaponOptions = [Longsword(), Shortbow(), Longbow(), Axe(), Spear(), Warhammer(), Club()]
 
-armorOptions = [Armor("Leather", 1, 0.5, 5)]
+armorOptions = [Leather(), Hide(), StuddedLeather(), Breastplate(), Padded(), ChainShirt(), Chainmail(), ScaleMail()]
 
 characterLevel = 1
