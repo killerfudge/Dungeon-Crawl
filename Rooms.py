@@ -21,481 +21,619 @@ class Shop:
 
     def shop(self, character):
         try:
-            selection = ""
-            while selection.lower() != "leave" and selection.lower() != "nothing":
-                if self.knives > 0:
-                    print(str(self.knives) + " throwing knives: 2 gold each")
+            done = False
+            while not done:
                 if self.arrows > 0:
-                    print(str(self.arrows) + " arrows: 5 gold each")
+                    print(str(self.arrows) + " arrows: 5 gold each (a)")
+                if self.knives > 0:
+                    print(str(self.knives) + " throwing knives: 2 gold each (s)")
                 if self.minorPotions > 0:
-                    print(str(self.minorPotions) + " minor potions: 5 gold each")
+                    print(str(self.minorPotions) + " minor potions: 5 gold each (z)")
                 if self.moderatePotions > 0:
-                    print(str(self.moderatePotions) + " moderate potions: 10 gold each")
+                    print(str(self.moderatePotions) + " moderate potions: 10 gold each (x)")
                 if self.majorPotions > 0:
-                    print(str(self.majorPotions) + " major potions: 15 gold each")
+                    print(str(self.majorPotions) + " major potions: 15 gold each (c)")
                 if self.weapon:
-                    print(self.weapon.name + ": " + str(self.weapon.gold) + " gold")
+                    print(self.weapon.name + ": " + str(self.weapon.gold) + " gold (d)")
                 if self.armor:
-                    print(self.armor.name + ": " + str(self.armor.gold) + " gold")
+                    print(self.armor.name + ": " + str(self.armor.gold) + " gold (f)")
                 print("You have " + str(character.gold) + " gold.")
-                selection = input("What would you like to buy? Or would you prefer to sell? (Type item name.)")
-                if selection.lower() == "knives" or selection.lower() == "knife" or \
-                        selection.lower() == "throwing knife":
-                    if self.knives <= 0:
-                        print("There are no throwing knives for sale.")
-                    elif self.knives > 1:
-                        number = input("How many knives do you want to buy? max: " + str(self.knives) + " ")
-                        if number.isdigit():
-                            if int(number) > self.knives or int(number) <= 0:
-                                print("Invalid number of knives.")
-                            else:
-                                if character.gold >= 2 * int(number):
-                                    character.knives += int(number)
-                                    character.gold -= 2 * int(number)
-                                    self.knives -= int(number)
-                                    print("Knives acquired.")
-                                else:
-                                    print("You don't have enough gold.")
-                        else:
-                            print("Invalid input.")
-                    else:
-                        if character.gold >= 2:
-                            character.knives += 1
-                            character.gold -= 2
-                            self.knives -= 1
-                            print("Knife acquired.")
-                        else:
-                            print("You don't have enough gold.")
-                elif selection.lower() == "arrows" or selection.lower() == "arrow":
-                    if self.arrows <= 0:
-                        print("There are no arrows for sale.")
-                    elif self.arrows > 1:
-                        number = input("How many arrows do you want to buy? max: " + str(self.arrows) + " ")
-                        if number.isdigit():
-                            if int(number) > self.arrows or int(number) <= 0:
-                                print("Invalid number of arrows.")
-                            else:
-                                if character.gold >= 5 * int(number):
-                                    character.arrows += int(number)
-                                    character.gold -= 5 * int(number)
-                                    self.arrows -= int(number)
-                                    print("Arrows acquired.")
-                                else:
-                                    print("You don't have enough gold.")
-                        else:
-                            print("Invalid input.")
-                    else:
-                        if character.gold >= 5:
-                            character.gold -= 5
-                            character.arrows += 1
-                            self.arrows -= 1
-                            print("Arrow acquired.")
-                        else:
-                            print("You don't have enough gold.")
-                elif selection.lower() == "minor potion":
-                    if self.minorPotions <= 0:
-                        print("There are no minor potions for sale.")
-                    elif self.minorPotions > 1:
-                        number = input("How many minor potions do you want to buy? ")
-                        if number.isdigit():
-                            if int(number) > self.minorPotions or int(number) <= 0:
-                                print("Invalid number of minor potions.")
-                            else:
-                                if character.gold >= 5 * int(number):
-                                    character.gold -= 5 * int(number)
-                                    character.minorPotions += int(number)
-                                    self.minorPotions -= int(number)
-                                    print("Minor potions acquired.")
-                                else:
-                                    print("You don't have enough gold.")
-                        else:
-                            print("Invalid input.")
-                    else:
-                        if character.gold >= 5:
-                            character.gold -= 5
-                            character.minorPotions += 1
-                            self.minorPotions -= 1
-                            print("Minor potion acquired.")
-                        else:
-                            print("You don't have enough gold.")
-                elif selection.lower() == "moderate potion":
-                    if self.moderatePotions <= 0:
-                        print("There are no moderate potions for sale.")
-                    elif self.moderatePotions > 1:
-                        number = input("How many moderate potions do you want to buy? ")
-                        if number.isdigit():
-                            if int(number) > self.moderatePotions or int(number) <= 0:
-                                print("Invalid number of moderate potions.")
-                            else:
-                                if character.gold >= 10 * int(number):
-                                    character.gold -= 10 * int(number)
-                                    character.moderatePotions += int(number)
-                                    self.moderatePotions -= int(number)
-                                    print("Moderate potions acquired.")
-                                else:
-                                    print("You don't have enough gold.")
-                        else:
-                            print("Invalid input.")
-                    else:
-                        if character.gold >= 10:
-                            character.gold -= 10
-                            character.moderatePotions += 1
-                            self.moderatePotions -= 1
-                            print("Moderate potion acquired.")
-                        else:
-                            print("You don't have enough gold.")
-                elif selection.lower() == "major potion":
-                    if self.majorPotions <= 0:
-                        print("There are no major potions for sale.")
-                    elif self.majorPotions > 1:
-                        number = input("How many major potions do you want to buy? ")
-                        if number.isdigit():
-                            if int(number) > self.majorPotions or int(number) <= 0:
-                                print("Invalid number of major potions.")
-                            else:
-                                if character.gold >= 15 * int(number):
-                                    character.gold -= 15 * int(number)
-                                    character.majorPotions += int(number)
-                                    self.majorPotions -= int(number)
-                                    print("Major potions acquired.")
-                                else:
-                                    print("You don't have enough gold.")
-                        else:
-                            print("Invalid input.")
-                    else:
-                        if character.gold >= 15:
-                            character.gold -= 15
-                            character.majorPotions += 1
-                            self.majorPotions -= 1
-                            print("Major potion acquired.")
-                        else:
-                            print("You don't have enough gold.")
-                elif selection.lower() == self.weapon.name.lower():
-                    if character.gold >= self.weapon.gold:
-                        character.gold -= self.weapon.gold
-                        equip = input(self.weapon.name + " acquired. Would you like to equip it?")
-                        if equip.lower() == "yes":
-                            found = False
-                            for weapon in character.storedWeapons:
-                                if weapon[0].name == character.equippedWeapon.name:
-                                    weapon[1] += 1
-                                    found = True
-                            if not found:
-                                character.storedWeapons.append([character.equippedWeapon, 1])
-                            character.equippedWeapon = self.weapon
-                        else:
-                            print(self.weapon.name + " put away.")
-                            found = False
-                            for weapon in character.storedWeapons:
-                                if weapon[0].name == self.weapon.name:
-                                    weapon[1] += 1
-                                    found = True
-                            if not found:
-                                character.storedWeapons.append([self.weapon, 1])
-                    else:
-                        print("You don't have enough gold.")
-                elif selection.lower() == self.armor.name.lower():
-                    if character.gold >= self.armor.gold:
-                        character.gold -= self.armor.gold
-                        equip = input(self.armor.name + " armor acquired. Do you want to equip it? ")
-                        if equip.lower() == "yes":
-                            if character.equippedArmor.name != "None":
-                                found = False
-                                for armor in character.storedArmor:
-                                    if armor.name == character.equippedArmor.name:
-                                        armor.quantity += 1
-                                        found = True
-                                if not found:
-                                    character.storedArmor.append(character.equippedArmor)
-                            character.equippedArmor = self.armor
-                        else:
-                            print(self.armor.name + " put away.")
-                            found = False
-                            for armor in character.storedArmor:
-                                if armor.name == self.armor.name:
-                                    armor.quantity += 1
-                                    found = True
-                            if not found:
-                                character.storedArmor.append(self.armor)
-                    else:
-                        print("You don't have enough gold.")
-                elif selection.lower() == "sell":
-                    print("What would you like to sell?")
-                    print("Equipped weapon: " + character.equippedWeapon.print_details())
-                    print()
-                    if len(character.storedWeapons) >= 1:
-                        print("Stored weapons:")
-                        for stored_weapon in character.storedWeapons:
-                            print(str(stored_weapon[1]) + " " + stored_weapon[0].print_details())
-                            print()
-                    if character.equippedArmor.name != "None":
-                        print("Equipped armor: " + character.equippedArmor.print_details())
-                        print()
-                    if len(character.storedArmor) >= 1:
-                        print("Stored armor:")
-                        for stored_armor in character.storedArmor:
-                            if stored_armor.name != "None":
-                                print(str(stored_armor.quantity) + " " + stored_armor.print_details())
-                                print()
-                    selling = input()
-                    if selling.lower() == character.equippedWeapon.name.lower():
-                        sell = input("Do you want to sell your equipped weapon? ")
-                        if sell.lower() == "yes" or sell.lower() == "y":
-                            print(character.equippedWeapon.name + " sold for " + str(character.equippedWeapon.gold))
-                            character.gold += character.equippedWeapon.gold
-                            if character.storedWeapons:
-                                equipped = False
-                                for stored_weapon in character.storedWeapons:
-                                    choice = input("Would you like to equip " + stored_weapon[0].name + "? ")
-                                    if choice.lower() == "yes":
-                                        character.equippedWeapon = stored_weapon[0]
-                                        if stored_weapon[1] == 1:
-                                            character.storedWeapons.remove(stored_weapon)
-                                        else:
-                                            stored_weapon[1] -= 1
-                                        equipped = True
+                print("What would you like to buy? Or would you prefer to sell (g)? (leave-q)")
+                while True:
+                    event = keyboard.read_event(suppress=True)
+                    if event.event_type == keyboard.KEY_UP and event.name == "a":
+                        if self.arrows <= 0:
+                            print("There are no arrows for sale.")
+                        elif self.arrows > 1:
+                            sold = False
+                            quantity = 0
+                            while not sold:
+                                SupportInfo.clear()
+                                print("How many arrows do you want to buy? f-confirm " + str(quantity))
+                                while True:
+                                    event = keyboard.read_event(suppress=True)
+                                    if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                        if self.arrows > quantity:
+                                            quantity += 1
                                         break
-                                if not equipped:
-                                    character.equippedWeapon = SupportInfo.Fist()
-                            else:
-                                character.equippedWeapon = SupportInfo.Fist()
-                        else:
-                            for item in character.storedWeapons:
-                                if selling.lower() == item[0].name.lower():
-                                    if item[1] == 1:
-                                        print(item[0].name + " sold for " + str(item[0].gold))
-                                        character.gold += item[0].gold
-                                        character.storedWeapons.remove(item)
+                                    elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                        if quantity >= 0:
+                                            quantity -= 1
                                         break
-                                    else:
-                                        number = input("How many do you want to sell? ")
-                                        if number.isdigit():
-                                            if 0 < int(number) <= item[1]:
-                                                value = item[0].gold * int(number)
-                                                print(number + " " + item[0].name + "s sold for " + str(value))
-                                                character.gold += value
-                                                item[1] -= int(number)
-                                                if item[1] == 0:
-                                                    character.storedWeapons.remove(item)
-                                                break
-                                            else:
-                                                print("You can't sell that many.")
-                                        else:
-                                            print("Incorrect input.")
-                    elif selling.lower() == character.equippedArmor.name.lower():
-                        print("Do you want to sell your equipped armor? d=yes f=no")
-                        while True:
-                            event = keyboard.read_event(suppress=True)
-                            if event.event_type == keyboard.KEY_UP and event.name == "d":
-                                print(character.equippedArmor.name + " sold for " + str(character.equippedArmor.gold))
-                                character.gold += character.equippedArmor.gold
-                                if character.storedArmor:
-                                    equipped = False
-                                    for stored_armor in character.storedArmor:
-                                        print("Would you like to equip " + stored_armor.name + "? d=yes f=no")
-                                        while True:
-                                            choice = keyboard.read_event(suppress=True)
-                                            if choice.event_type == keyboard.KEY_UP and event.name == "d":
-                                                character.equippedArmor = stored_armor
-                                                stored_armor.quantity -= 1
-                                                if stored_armor.quantity == 0:
-                                                    character.storedArmor.remove(stored_armor)
-                                                equipped = True
-                                                break
-                                        if equipped:
-                                            break
-                                    if not equipped:
-                                        character.equippedArmor = SupportInfo.Armor("None", 0, 0)
-                                    break
-                                else:
-                                    character.equippedArmor = SupportInfo.Armor("None", 0, 0)
-                                    break
-                            elif event.event_type == keyboard.KEY_UP:
-                                for item in character.storedArmor:
-                                    if selling.lower() == item.name.lower():
-                                        if item.quantity > 1:
-                                            sold = False
-                                            quantity = 0
-                                            while not sold:
-                                                print("How many do you want to sell? f-confirm " + str(quantity))
-                                                while True:
-                                                    event = keyboard.read_event(suppress=True)
-                                                    if event.event_type == keyboard.KEY_UP and event.name == "up":
-                                                        if item.quantity > quantity:
-                                                            quantity += 1
-                                                        break
-                                                    elif event.event_type == keyboard.KEY_UP and event.name == "down":
-                                                        if quantity > 0:
-                                                            quantity -= 1
-                                                        break
-                                                    elif event.event_type == keyboard.KEY_UP and event.name == "f":
-                                                        value = int(item.gold / 2) * quantity
-                                                        print(str(quantity) + " " + item.name + "s sold for " + str(value))
-                                                        character.gold += value
-                                                        item.quantity -= quantity
-                                                        if item.quantity == 0:
-                                                            character.storedArmor.remove(item)
-                                                        sold = True
-                                                        break
-                                        else:
-                                            print(item.name + " sold for " + str(int(item.gold / 2)))
-                                            character.gold += int(item.gold / 2)
-                                            character.storedArmor.remove(item)
-                                            break
-                    elif selling.lower() == "knives" or selling.lower() == "throwing knives":
-                        if character.knives == 0:
-                            print("You don't have any throwing knives to sell.")
-                        else:
-                            knives = input("You have " + str(character.knives) +
-                                           " throwing knives to sell. How many do you want to sell for 1 gold each?")
-                            if knives.isdigit():
-                                if 0 < int(knives) <= character.knives:
-                                    print(knives + " throwing knives sold.")
-                                    self.knives += int(knives)
-                                    character.knives -= int(knives)
-                                    character.gold += int(knives)
-                                elif int(knives) > character.knives:
-                                    print("You don't have that many knives.")
-                                else:
-                                    print("Invalid number of knives.")
-                            else:
-                                print("Invalid input.")
-                    elif selling.lower() == "arrows":
-                        if character.arrows == 0:
-                            print("You don't have any arrows to sell.")
-                        else:
-                            arrows = input("You have " + str(character.arrows) +
-                                           " arrows to sell. How many do you want to sell for 2 gold each?")
-                            if arrows.isdigit():
-                                if 0 < int(arrows) <= character.arrows:
-                                    print(arrows + " arrows sold.")
-                                    self.arrows += int(arrows)
-                                    character.arrows -= int(arrows)
-                                    character.gold += 2 * int(arrows)
-                                elif int(arrows) > character.arrows:
-                                    print("You don't have that many arrows.")
-                                else:
-                                    print("Invalid number of arrows.")
-                            else:
-                                print("Invalid input.")
-                    elif selling.lower() == "minor potion":
-                        if character.minorPotions == 0:
-                            print("You don't have any minor potions to sell.")
-                        else:
-                            potions = input("You have " + str(character.minorPotions) +
-                                            " minor potions to sell. How many do you want to sell for 2 gold each?")
-                            if potions.isdigit():
-                                if 0 < int(potions) <= character.minorPotions:
-                                    print(potions + " minor potions sold.")
-                                    self.minorPotions += int(potions)
-                                    character.minorPotions -= int(potions)
-                                    character.gold += 2 * int(potions)
-                                elif int(potions) > character.minorPotions:
-                                    print("You don't have that many minor potions.")
-                                else:
-                                    print("Invalid number of minor potions.")
-                            else:
-                                print("Invalid input.")
-                    elif selling.lower() == "moderate potion":
-                        if character.moderatePotions == 0:
-                            print("You don't have any moderate potions to sell.")
-                        else:
-                            potions = input("You have " + str(character.moderatePotions) +
-                                            " moderate potions to sell. How many do you want to sell for 5 gold each?")
-                            if potions.isdigit():
-                                if 0 < int(potions) <= character.moderatePotions:
-                                    print(potions + " moderate potions sold.")
-                                    self.moderatePotions += int(potions)
-                                    character.moderatePotions -= int(potions)
-                                    character.gold += 5 * int(potions)
-                                elif int(potions) > character.moderatePotions:
-                                    print("You don't have that many moderate potions.")
-                                else:
-                                    print("Invalid number of moderate potions.")
-                            else:
-                                print("Invalid input.")
-                    elif selling.lower() == "major potion":
-                        if character.majorPotions == 0:
-                            print("You don't have any major potions to sell.")
-                        else:
-                            potions = input("You have " + str(character.majorPotions) +
-                                            " major potions to sell. How many do you want to sell for 5 gold each?")
-                            if potions.isdigit():
-                                if 0 < int(potions) <= character.majorPotions:
-                                    print(potions + " major potions sold.")
-                                    self.majorPotions += int(potions)
-                                    character.majorPotions -= int(potions)
-                                    character.gold += 5 * int(potions)
-                                elif int(potions) > character.majorPotions:
-                                    print("You don't have that many major potions.")
-                                else:
-                                    print("Invalid number of major potions.")
-                            else:
-                                print("Invalid input.")
-                    else:
-                        sold = False
-                        for item in character.storedWeapons:
-                            if selling.lower() == item[0].name.lower():
-                                if item[1] == 1:
-                                    print(item[0].name + " sold for " + str(item[0].gold))
-                                    character.gold += item[0].gold
-                                    character.storedWeapons.remove(item)
-                                    sold = True
-                                    break
-                                else:
-                                    number = input("How many do you want to sell? ")
-                                    if number.isdigit():
-                                        if 0 < int(number) <= item[1]:
-                                            value = item[0].gold * int(number)
-                                            print(number + " " + item[0].name + "s sold for " + str(value))
-                                            character.gold += value
-                                            item[1] -= int(number)
-                                            if item[1] == 0:
-                                                character.storedWeapons.remove(item)
+                                    elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                        if character.gold >= 5 * quantity:
+                                            character.arrows += quantity
+                                            character.gold -= 5 * quantity
+                                            self.arrows -= quantity
+                                            print("Arrows acquired.")
                                             sold = True
                                             break
                                         else:
-                                            print("You can't sell that many.")
-                                    else:
-                                        print("Incorrect input.")
-                        if not sold:
-                            for item in character.storedArmor:
-                                if selling.lower() == item.name.lower():
-                                    if item.quantity > 1:
-                                        sold = False
-                                        quantity = 0
-                                        while not sold:
-                                            print("How many do you want to sell? f-confirm " + str(quantity))
-                                            while True:
-                                                event = keyboard.read_event(suppress=True)
-                                                if event.event_type == keyboard.KEY_UP and event.name == "up":
-                                                    if item.quantity > quantity:
-                                                        quantity += 1
-                                                    break
-                                                elif event.event_type == keyboard.KEY_UP and event.name == "down":
-                                                    if quantity > 0:
-                                                        quantity -= 1
-                                                    break
-                                                elif event.event_type == keyboard.KEY_UP and event.name == "f":
-                                                    value = int(item.gold / 2) * quantity
-                                                    print(str(quantity) + " " + item.name + "s sold for " + str(value))
-                                                    character.gold += value
-                                                    item.quantity -= quantity
-                                                    if item.quantity == 0:
-                                                        character.storedArmor.remove(item)
-                                                    sold = True
-                                                    break
-                                    else:
-                                        print(item.name + " sold for " + str(int(item.gold / 2)))
-                                        character.gold += int(item.gold / 2)
-                                        character.storedArmor.remove(item)
-                                        sold = True
+                                            print("You don't have enough gold.")
+                                            break
+                        else:
+                            SupportInfo.clear()
+                            if character.gold >= 5:
+                                character.gold -= 5
+                                character.arrows += 1
+                                self.arrows -= 1
+                                print("Arrow acquired.")
+                            else:
+                                print("You don't have enough gold.")
+                        break
+                    elif event.event_type == keyboard.KEY_UP and event.name == "s":
+                        if self.knives <= 0:
+                            print("There are no throwing knives for sale.")
+                        elif self.knives > 1:
+                            sold = False
+                            quantity = 0
+                            while not sold:
+                                SupportInfo.clear()
+                                print("How many knives do you want to buy? f-confirm " + str(quantity))
+                                while True:
+                                    event = keyboard.read_event(suppress=True)
+                                    if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                        if self.knives > quantity:
+                                            quantity += 1
                                         break
-                        if not sold:
-                            print("You don't have that item to sell")
-                else:
-                    if selection.lower() != "leave" and selection.lower() != "nothing":
-                        print("Invalid input. If you would like to leave the shop, type 'leave'.")
+                                    elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                        if quantity >= 0:
+                                            quantity -= 1
+                                        break
+                                    elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                        if character.gold >= 2 * quantity:
+                                            character.knives += quantity
+                                            character.gold -= 2 * quantity
+                                            self.knives -= quantity
+                                            print("Knives acquired.")
+                                            sold = True
+                                            break
+                                        else:
+                                            print("You don't have enough gold.")
+                                            break
+                        else:
+                            SupportInfo.clear()
+                            if character.gold >= 2:
+                                character.knives += 1
+                                character.gold -= 2
+                                self.knives -= 1
+                                print("Knife acquired.")
+                            else:
+                                print("You don't have enough gold.")
+                        break
+                    elif event.event_type == keyboard.KEY_UP and event.name == "z":
+                        if self.minorPotions <= 0:
+                            print("There are no minor potions for sale.")
+                        elif self.minorPotions > 1:
+                            sold = False
+                            quantity = 0
+                            while not sold:
+                                SupportInfo.clear()
+                                print("How many minor potions do you want to buy? f-confirm " + str(quantity))
+                                while True:
+                                    event = keyboard.read_event(suppress=True)
+                                    if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                        if self.minorPotions > quantity:
+                                            quantity += 1
+                                        break
+                                    elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                        if quantity >= 0:
+                                            quantity -= 1
+                                        break
+                                    elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                        if character.gold >= 5 * quantity:
+                                            character.gold -= 5 * quantity
+                                            character.minorPotions += quantity
+                                            self.minorPotions -= quantity
+                                            print("Minor potions acquired.")
+                                            sold = True
+                                            break
+                                        else:
+                                            print("You don't have enough gold.")
+                                            break
+                        else:
+                            SupportInfo.clear()
+                            if character.gold >= 5:
+                                character.gold -= 5
+                                character.minorPotions += 1
+                                self.minorPotions -= 1
+                                print("Minor potion acquired.")
+                            else:
+                                print("You don't have enough gold.")
+                        break
+                    elif event.event_type == keyboard.KEY_UP and event.name == "x":
+                        if self.moderatePotions <= 0:
+                            print("There are no moderate potions for sale.")
+                        elif self.moderatePotions > 1:
+                            sold = False
+                            quantity = 0
+                            while not sold:
+                                SupportInfo.clear()
+                                print("How many moderate potions do you want to buy? f-confirm " + str(quantity))
+                                while True:
+                                    event = keyboard.read_event(suppress=True)
+                                    if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                        if self.moderatePotions > quantity:
+                                            quantity += 1
+                                        break
+                                    elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                        if quantity >= 0:
+                                            quantity -= 1
+                                        break
+                                    elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                        if character.gold >= 10 * quantity:
+                                            character.gold -= 10 * quantity
+                                            character.moderatePotions += quantity
+                                            self.moderatePotions -= quantity
+                                            print("Moderate potions acquired.")
+                                            sold = True
+                                            break
+                                        else:
+                                            print("You don't have enough gold.")
+                                            break
+                        else:
+                            SupportInfo.clear()
+                            if character.gold >= 10:
+                                character.gold -= 10
+                                character.moderatePotions += 1
+                                self.moderatePotions -= 1
+                                print("Moderate potion acquired.")
+                            else:
+                                print("You don't have enough gold.")
+                        break
+                    elif event.event_type == keyboard.KEY_UP and event.name == "c":
+                        if self.majorPotions <= 0:
+                            print("There are no major potions for sale.")
+                        elif self.majorPotions > 1:
+                            sold = False
+                            quantity = 0
+                            while not sold:
+                                SupportInfo.clear()
+                                print("How many major potions do you want to buy? f-confirm " + str(quantity))
+                                while True:
+                                    event = keyboard.read_event(suppress=True)
+                                    if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                        if self.majorPotions > quantity:
+                                            quantity += 1
+                                        break
+                                    elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                        if quantity >= 0:
+                                            quantity -= 1
+                                        break
+                                    elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                        if character.gold >= 15 * quantity:
+                                            character.gold -= 15 * quantity
+                                            character.majorPotions += quantity
+                                            self.majorPotions -= quantity
+                                            print("Major potions acquired.")
+                                            sold = True
+                                            break
+                                        else:
+                                            print("You don't have enough gold.")
+                                            break
+                        else:
+                            SupportInfo.clear()
+                            if character.gold >= 15:
+                                character.gold -= 15
+                                character.majorPotions += 1
+                                self.majorPotions -= 1
+                                print("Major potion acquired.")
+                            else:
+                                print("You don't have enough gold.")
+                        break
+                    elif event.event_type == keyboard.KEY_UP and event.name == "d":
+                        if character.gold >= self.weapon.gold:
+                            character.gold -= self.weapon.gold
+                            SupportInfo.clear()
+                            print(self.weapon.name + " acquired. Would you like to equip it? (d-yes, f-no")
+                            while True:
+                                event = keyboard.read_event(suppress=True)
+                                if event.event_type == keyboard.KEY_UP and event.name == "d":
+                                    found = False
+                                    for weapon in character.storedWeapons:
+                                        if weapon.name == character.equippedWeapon.name:
+                                            weapon.quantity += 1
+                                            found = True
+                                    if not found:
+                                        character.storedWeapons.append(character.equippedWeapon)
+                                    character.equippedWeapon = self.weapon
+                                elif event.event_type == keyboard.KEY_UP:
+                                    SupportInfo.clear()
+                                    found = False
+                                    for weapon in character.storedWeapons:
+                                        if weapon.name == self.weapon.name:
+                                            weapon.quantity += 1
+                                            found = True
+                                    if not found:
+                                        character.storedWeapons.append(self.weapon)
+                        else:
+                            print("You don't have enough gold.")
+                        break
+                    elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                        if character.gold >= self.armor.gold:
+                            character.gold -= self.armor.gold
+                            SupportInfo.clear()
+                            print(self.armor.name + " armor acquired. Do you want to equip it? (d-yes, f-no)")
+                            while True:
+                                event = keyboard.read_event(suppress=True)
+                                if event.event_type == keyboard.KEY_UP and event.name == "d":
+                                    if character.equippedArmor.name != "None":
+                                        found = False
+                                        for armor in character.storedArmor:
+                                            if armor.name == character.equippedArmor.name:
+                                                armor.quantity += 1
+                                                found = True
+                                        if not found:
+                                            character.storedArmor.append(character.equippedArmor)
+                                    character.equippedArmor = self.armor
+                                elif event.event_type == keyboard.KEY_UP:
+                                    SupportInfo.clear()
+                                    found = False
+                                    for armor in character.storedArmor:
+                                        if armor.name == self.armor.name:
+                                            armor.quantity += 1
+                                            found = True
+                                    if not found:
+                                        character.storedArmor.append(self.armor)
+                        else:
+                            print("You don't have enough gold.")
+                        break
+                    elif event.event_type == keyboard.KEY_UP and event.name == "g":
+                        SupportInfo.clear()
+                        print("What would you like to sell? (a-arrows, s-throwing knives, z-minor potions, "
+                              "x-moderate potions, c-major potions, d-weapon, f-armor)")
+                        while True:
+                            event = keyboard.read_event(suppress=True)
+                            if event.event_type == keyboard.KEY_UP and event.name == "a":
+                                if character.arrows == 0:
+                                    print("You don't have any arrows to sell.")
+                                else:
+                                    sold = False
+                                    quantity = 0
+                                    while not sold:
+                                        SupportInfo.clear()
+                                        print("You have " + str(character.arrows) + " arrows to sell. "
+                                              "How many do you want to sell for 2 gold each? f-confirm " + str(quantity))
+                                        while True:
+                                            event = keyboard.read_event(suppress=True)
+                                            if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                                if character.arrows > quantity:
+                                                    quantity += 1
+                                                break
+                                            elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                                if quantity >= 0:
+                                                    quantity -= 1
+                                                break
+                                            elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                                print(str(quantity) + " arrows sold.")
+                                                self.arrows += quantity
+                                                character.arrows -= quantity
+                                                character.gold += 2 * quantity
+                                                sold = True
+                                                break
+                                break
+                            elif event.event_type == keyboard.KEY_UP and event.name == "s":
+                                if character.knives == 0:
+                                    print("You don't have any throwing knives to sell.")
+                                else:
+                                    sold = False
+                                    quantity = 0
+                                    while not sold:
+                                        SupportInfo.clear()
+                                        print("You have " + str(character.knives) + " throwing knives to sell. "
+                                              "How many do you want to sell for 1 gold each? f-confirm " + str(quantity))
+                                        while True:
+                                            event = keyboard.read_event(suppress=True)
+                                            if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                                if character.knives > quantity:
+                                                    quantity += 1
+                                                break
+                                            elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                                if quantity >= 0:
+                                                    quantity -= 1
+                                                break
+                                            elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                                print(str(quantity) + " throwing knives sold.")
+                                                self.knives += quantity
+                                                character.knives -= quantity
+                                                character.gold += quantity
+                                                sold = True
+                                                break
+                                break
+                            elif event.event_type == keyboard.KEY_UP and event.name == "z":
+                                if character.minorPotions == 0:
+                                    print("You don't have any minor potions to sell.")
+                                else:
+                                    sold = False
+                                    quantity = 0
+                                    while not sold:
+                                        SupportInfo.clear()
+                                        print("You have " + str(character.minorPotions) + " minor potions to sell. "
+                                              "How many do you want to sell for 2 gold each? f-confirm " + str(quantity))
+                                        while True:
+                                            event = keyboard.read_event(suppress=True)
+                                            if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                                if character.minorPotions > quantity:
+                                                    quantity += 1
+                                                break
+                                            elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                                if quantity >= 0:
+                                                    quantity -= 1
+                                                break
+                                            elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                                print(str(quantity) + " minor potions sold.")
+                                                self.minorPotions += quantity
+                                                character.minorPotions -= quantity
+                                                character.gold += 2 * quantity
+                                                sold = True
+                                                break
+                                break
+                            elif event.event_type == keyboard.KEY_UP and event.name == "x":
+                                if character.moderatePotions == 0:
+                                    print("You don't have any moderate potions to sell.")
+                                else:
+                                    sold = False
+                                    quantity = 0
+                                    while not sold:
+                                        SupportInfo.clear()
+                                        print("You have " + str(character.moderatePotions) + " moderate potions to sell. "
+                                              "How many do you want to sell for 5 gold each? f-confirm " + str(quantity))
+                                        while True:
+                                            event = keyboard.read_event(suppress=True)
+                                            if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                                if character.moderatePotions > quantity:
+                                                    quantity += 1
+                                                break
+                                            elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                                if quantity >= 0:
+                                                    quantity -= 1
+                                                break
+                                            elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                                print(str(quantity) + " moderate potions sold.")
+                                                self.moderatePotions += quantity
+                                                character.moderatePotions -= quantity
+                                                character.gold += 5 * quantity
+                                                sold = True
+                                                break
+                                break
+                            elif event.event_type == keyboard.KEY_UP and event.name == "c":
+                                if character.majorPotions == 0:
+                                    print("You don't have any major potions to sell.")
+                                else:
+                                    sold = False
+                                    quantity = 0
+                                    while not sold:
+                                        SupportInfo.clear()
+                                        print("You have " + str(character.majorPotions) + " major potions to sell. "
+                                              "How many do you want to sell for 5 gold each? f-confirm " + str(quantity))
+                                        while True:
+                                            event = keyboard.read_event(suppress=True)
+                                            if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                                if character.majorPotions > quantity:
+                                                    quantity += 1
+                                                break
+                                            elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                                if quantity >= 0:
+                                                    quantity -= 1
+                                                break
+                                            elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                                print(str(quantity) + " major potions sold.")
+                                                self.majorPotions += quantity
+                                                character.majorPotions -= quantity
+                                                character.gold += 5 * quantity
+                                                sold = True
+                                                break
+                                break
+                            elif event.event_type == keyboard.KEY_UP and event.name == "d":
+                                SupportInfo.clear()
+                                print("Do you want to sell your equipped weapon? (d-yes, f-no)")
+                                while True:
+                                    event = keyboard.read_event(suppress=True)
+                                    if event.event_type == keyboard.KEY_UP and event.name == "d":
+                                        print(character.equippedWeapon.name + " sold for " + str(character.equippedWeapon.gold))
+                                        character.gold += character.equippedWeapon.gold
+                                        if character.storedWeapons:
+                                            equipped = False
+                                            for stored_weapon in character.storedWeapons:
+                                                print("Would you like to equip " + stored_weapon.name + "? (d-yes, f-no)")
+                                                while True:
+                                                    event = keyboard.read_event(suppress=True)
+                                                    if event.event_type == keyboard.KEY_UP and event.name == "d":
+                                                        character.equippedWeapon = stored_weapon
+                                                        if stored_weapon.quantity == 1:
+                                                            character.storedWeapons.remove(stored_weapon)
+                                                        else:
+                                                            stored_weapon.quantity -= 1
+                                                        equipped = True
+                                                        break
+                                                if equipped:
+                                                    break
+                                            if not equipped:
+                                                character.equippedWeapon = SupportInfo.Fist()
+                                        else:
+                                            character.equippedWeapon = SupportInfo.Fist()
+                                        break
+                                    elif event.event_type == keyboard.KEY_UP:
+                                        SupportInfo.clear()
+                                        if len(character.storedWeapons) > 0:
+                                            print("Stored Weapons to sell:")
+                                            for weapon in character.storedWeapons:
+                                                print(str(weapon.quantity) + " " + weapon.print_details())
+                                                print()
+                                            print("Which weapon do you want to sell for half its value? (f-confirm, c-cancel)")
+                                            index = 0
+                                            selected = False
+                                            while not selected:
+                                                print()
+                                                print(character.storedWeapons[index].print_details())
+                                                while True:
+                                                    event = keyboard.read_event(suppress=True)
+                                                    if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                                        if index < len(character.storedWeapons) - 1:
+                                                            index += 1
+                                                        SupportInfo.clear()
+                                                        break
+                                                    elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                                        if index >= 0:
+                                                            index -= 1
+                                                        SupportInfo.clear()
+                                                        break
+                                                    elif event.event_type == keyboard.KEY_UP and event.name == "c":
+                                                        SupportInfo.clear()
+                                                        selected = True
+                                                        break
+                                                    elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                                        weapon = character.storedWeapons[index]
+                                                        quantity = 0
+                                                        sold = False
+                                                        while not sold:
+                                                            SupportInfo.clear()
+                                                            print("You have " + str(weapon.quantity) + " " + weapon.name + " to sell. "
+                                                                  "How many do you want to sell? (f-confirm) " + str(quantity))
+                                                            while True:
+                                                                event = keyboard.read_event(suppress=True)
+                                                                if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                                                    if quantity < weapon.quantity:
+                                                                        quantity += 1
+                                                                    break
+                                                                elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                                                    if quantity > 0:
+                                                                        quantity -= 1
+                                                                    break
+                                                                elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                                                    value = int(weapon.gold / 2) * quantity
+                                                                    print(str(quantity) + " " + weapon.name + "s sold for " + str(value))
+                                                                    character.gold += value
+                                                                    weapon.quantity -= quantity
+                                                                    if weapon.quantity == 0:
+                                                                        character.storedWeapons.remove(weapon)
+                                                                    sold = True
+                                                                    break
+                                                        selected = True
+                                                        break
+                                        else:
+                                            print("No stored weapons to sell.")
+                                        break
+                                break
+                            elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                SupportInfo.clear()
+                                print("Do you want to sell your equipped armor? d=yes f=no")
+                                while True:
+                                    event = keyboard.read_event(suppress=True)
+                                    if event.event_type == keyboard.KEY_UP and event.name == "d":
+                                        print(character.equippedArmor.name + " sold for " + str(character.equippedArmor.gold))
+                                        character.gold += character.equippedArmor.gold
+                                        if character.storedArmor:
+                                            equipped = False
+                                            for stored_armor in character.storedArmor:
+                                                print("Would you like to equip " + stored_armor.name + "? d=yes f=no")
+                                                while True:
+                                                    choice = keyboard.read_event(suppress=True)
+                                                    if choice.event_type == keyboard.KEY_UP and event.name == "d":
+                                                        character.equippedArmor = stored_armor
+                                                        stored_armor.quantity -= 1
+                                                        if stored_armor.quantity == 0:
+                                                            character.storedArmor.remove(stored_armor)
+                                                        equipped = True
+                                                        break
+                                                if equipped:
+                                                    break
+                                            if not equipped:
+                                                character.equippedArmor = SupportInfo.Armor("None", 0, 0)
+                                            break
+                                        else:
+                                            character.equippedArmor = SupportInfo.Armor("None", 0, 0)
+                                            break
+                                    elif event.event_type == keyboard.KEY_UP:
+                                        if len(character.storedArmor) > 0:
+                                            SupportInfo.clear()
+                                            print("Stored Armor to sell:")
+                                            for armor in character.storedArmor:
+                                                print(str(armor.quantity) + " " + armor.print_details())
+                                                print()
+                                            print("Which armor do you want to sell for half its value? (f-confirm, c-cancel")
+                                            index = 0
+                                            selected = False
+                                            while not selected:
+                                                print()
+                                                print(character.storedArmor[index].print_details())
+                                                while True:
+                                                    event = keyboard.read_event(suppress=True)
+                                                    if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                                        if index < len(character.storedArmor) - 1:
+                                                            index += 1
+                                                        SupportInfo.clear()
+                                                        break
+                                                    elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                                        if index >= 0:
+                                                            index -= 1
+                                                        SupportInfo.clear()
+                                                        break
+                                                    elif event.event_type == keyboard.KEY_UP and event.name == "c":
+                                                        selected = True
+                                                        SupportInfo.clear()
+                                                        break
+                                                    elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                                        armor = character.storedArmor[index]
+                                                        sold = False
+                                                        quantity = 0
+                                                        while not sold:
+                                                            SupportInfo.clear()
+                                                            print("You have " + str(armor.quantity) + " " + armor.name + " to sell. "
+                                                                  "How many do you want to sell? f-confirm " + str(quantity))
+                                                            while True:
+                                                                event = keyboard.read_event(suppress=True)
+                                                                if event.event_type == keyboard.KEY_UP and event.name == "up":
+                                                                    if armor.quantity > quantity:
+                                                                        quantity += 1
+                                                                    break
+                                                                elif event.event_type == keyboard.KEY_UP and event.name == "down":
+                                                                    if quantity > 0:
+                                                                        quantity -= 1
+                                                                    break
+                                                                elif event.event_type == keyboard.KEY_UP and event.name == "f":
+                                                                    value = int(armor.gold / 2) * quantity
+                                                                    print(str(quantity) + " " + armor.name + "s sold for " + str(value))
+                                                                    character.gold += value
+                                                                    armor.quantity -= quantity
+                                                                    if armor.quantity == 0:
+                                                                        character.storedArmor.remove(armor)
+                                                                    sold = True
+                                                                    break
+                                                        selected = True
+                                                        break
+                                        else:
+                                            print("No stored armor to sell.")
+                                        break
+                                break
+                            elif event.event_type == keyboard.KEY_UP:
+                                SupportInfo.clear()
+                                print("Selling cancelled.")
+                                break
+                        break
+                    elif event.event_type == keyboard.KEY_UP and event.name == "q":
+                        done = True
+                        break
         except:
             f = open("error_report.txt", "a")
             print("An error occurred when shopping.")

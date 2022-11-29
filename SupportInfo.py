@@ -1,5 +1,15 @@
 import traceback
 import random
+import os
+
+
+def clear():
+    # Clear the screen for Windows machines
+    if os.name == 'nt':
+        _ = os.system('cls')
+    # Clear the screen for mac and linux
+    else:
+        _ = os.system('clear')
 
 
 class ThrowingKnife:
@@ -12,6 +22,7 @@ class ThrowingKnife:
         self.gold = 2
         self.traits = []
         self.isRanged = False
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
@@ -47,6 +58,7 @@ class Fist:
         self.gold = 0
         self.traits = []
         self.isRanged = False
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
@@ -83,6 +95,7 @@ class Longsword:
         self.damageType = "Slashing"
         self.traits = ["Versatile-Piercing"]
         self.isRanged = False
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
@@ -122,6 +135,7 @@ class Shortsword:
         self.damageType = "Slashing"
         self.traits = ["Versatile-Piercing"]
         self.isRanged = False
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
@@ -161,6 +175,7 @@ class Axe:
         self.damageType = "Slashing"
         self.traits = []
         self.isRanged = False
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
@@ -197,6 +212,7 @@ class Club:
         self.damageType = "Bludgeoning"
         self.traits = []
         self.isRanged = False
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
@@ -233,6 +249,7 @@ class Warhammer:
         self.damageType = "Bludgeoning"
         self.traits = []
         self.isRanged = False
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
@@ -269,6 +286,7 @@ class Dagger:
         self.damageType = "Piercing"
         self.traits = []
         self.isRanged = False
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
@@ -305,6 +323,7 @@ class Spear:
         self.damageType = "Piercing"
         self.traits = []
         self.isRanged = False
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
@@ -341,6 +360,7 @@ class Shortbow:
         self.damageType = "Piercing"
         self.traits = []
         self.isRanged = True
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
@@ -378,6 +398,7 @@ class Longbow:
         self.damageType = "Piercing"
         self.traits = []
         self.isRanged = True
+        self.quantity = 1
 
     def print_details(self):
         wstring = self.name
