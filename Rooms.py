@@ -286,6 +286,7 @@ class Shop:
                                         if not found:
                                             character.storedArmor.append(character.equippedArmor)
                                     character.equippedArmor = self.armor
+                                    break
                                 elif event.event_type == keyboard.KEY_UP:
                                     SupportInfo.clear()
                                     found = False
@@ -295,6 +296,7 @@ class Shop:
                                             found = True
                                     if not found:
                                         character.storedArmor.append(self.armor)
+                                    break
                         else:
                             print("You don't have enough gold.")
                         break

@@ -36,6 +36,8 @@ class ThrowingKnife:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage += 1
                 target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
@@ -72,6 +74,8 @@ class Fist:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage += 1
                 target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
@@ -112,6 +116,8 @@ class Longsword:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((2 + damage), (9 + damage), 1)
                 target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
@@ -152,6 +158,8 @@ class Shortsword:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((1 + damage), (7 + damage), 1)
                 target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
@@ -189,6 +197,8 @@ class Axe:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((4 + damage), (7 + damage), 1)
                 target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
@@ -226,6 +236,8 @@ class Club:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((1 + damage), (7 + damage), 1)
                 target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
@@ -263,8 +275,49 @@ class Warhammer:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((4 + damage), (9 + damage), 1)
+                target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
+            else:
+                print("The attack misses!")
+        except:
+            f = open("error_report.txt", "a")
+            print("An error occurred.")
+            traceback.print_exc(None, f)
+            f.close()
+
+
+class Greatclub:
+    def __init__(self):
+        self.name = "Greatclub"
+        self.range = 1
+        self.gold = 10
+        self.hands = 2
+        self.weight = 2.5
+        self.equipable = True
+        self.damageType = "Bludgeoning"
+        self.traits = []
+        self.isRanged = False
+        self.quantity = 1
+
+    def print_details(self):
+        wstring = self.name
+        wstring += "\nRange: " + str(self.range)
+        wstring += "\nDamage: 3 - 10 " + self.damageType
+        wstring += "\nWeight: " + str(self.weight)
+        wstring += "\nHands required: " + str(self.hands)
+        wstring += "\nGold value: " + str(self.gold)
+        return wstring
+
+    def attack(self, accuracy, damage, target):
+        try:
+            armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
+            if random.randrange(1, 20) + accuracy > armor:
+                damage = random.randrange((3 + damage), (11 + damage), 1)
                 target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
             else:
                 print("The attack misses!")
@@ -300,6 +353,8 @@ class Dagger:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((1 + damage), (5 + damage), 1)
                 target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
@@ -337,6 +392,8 @@ class Spear:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = random.randrange((1 + damage), (7 + damage), 1)
                 target.equippedArmor.take_damage(damage, self.damageType, target, self.traits)
@@ -374,6 +431,8 @@ class Shortbow:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = int(damage / 2)
                 damage = random.randrange((1 + damage), (7 + damage), 1)
@@ -412,6 +471,8 @@ class Longbow:
     def attack(self, accuracy, damage, target):
         try:
             armor = target.dexterity + target.equippedArmor.defense
+            if target.equippedShield:
+                armor += target.equippedShield.defense
             if random.randrange(1, 20) + accuracy > armor:
                 damage = int(damage / 2)
                 damage = random.randrange((2 + damage), (7 + damage), 1)
@@ -687,6 +748,15 @@ class ScaleMail:
         else:
             target.currentHP -= damage
             print(target.name + " takes " + str(damage) + " points of damage!")
+
+
+class Shield:
+    def __init__(self):
+        self.name = "Shield"
+        self.defense = 1
+        self.weight = 0.5
+        self.gold = 2
+        self.quantity = 1
 
 
 tableOptions = [["knives", 1],

@@ -64,6 +64,7 @@ class Fighter:
         self.storedWeapons = []
         self.equippedArmor = SupportInfo.Armor("None", 0, 0)
         self.storedArmor = []
+        self.equippedShield = False
         # Throwing knives, used as a special attack
         self.knives = 0
         # Ammunition for ranged weapons
